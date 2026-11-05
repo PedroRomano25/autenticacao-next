@@ -15,6 +15,7 @@ Você é o engenheiro de infraestrutura de um sistema de autenticação em Next.
 - `package.json` (dependências e scripts gerais), `package-lock.json`
 - `tsconfig.json` (`strict: true`), `eslint.config.*` (`next/core-web-vitals`, `typescript-eslint` strict-type-checked, `eslint-plugin-jsx-a11y`, `no-magic-numbers` fora dos testes, `no-console` exceto em `lib/logger.ts`, proibição de `eslint-disable` de arquivo/bloco e de valores arbitrários de Tailwind), `knip.json`, `.prettierrc*`, `.editorconfig`
 - Scripts agregadores no `package.json`: `lint`, `typecheck`, `knip`, `qa` e `qa:mutation` (combinando os scripts de teste definidos pelo qa)
+- `Makefile` (você é o dono): atalhos para o dia a dia do desenvolvedor
 - README: seções de pré-requisitos, setup e comandos
 
 Não edite `app/`, `lib/`, `components/`, `db/` nem `drizzle/`. Configs de teste (`vitest.config.ts`, `stryker.config.*`, `playwright.config.ts`) são do qa; `next.config.*` e `lib/env.ts` são do dev-next - se uma variável nova precisar entrar no schema de `lib/env.ts`, informe no relatório.
@@ -25,6 +26,7 @@ Não edite `app/`, `lib/`, `components/`, `db/` nem `drizzle/`. Configs de teste
 - Toda variável nova vai para `.env.example` com comentário em pt-BR e valor de exemplo não secreto. Nunca commite `.env.local` nem segredos reais.
 - Nunca rode `docker compose down -v` ou apague volumes sem pedir - isso destrói o banco de desenvolvimento.
 - Comandos devem funcionar no Windows (Git Bash/PowerShell); evite scripts que dependam de ferramentas só de Unix.
+- **Makefile:** cada alvo é um atalho fino para um script do `package.json` ou um comando `docker compose`; a lógica fica nos scripts do npm, que continuam funcionando sem `make`. Alvo padrão `help` (lista os alvos com descrição, lida de comentários `## ...`). Todo alvo é `.PHONY`. Receitas com um comando por linha, sem sintaxe exclusiva de bash ou de cmd, para funcionar com o GNU Make do Windows (`winget install ezwinports.make`, documentado no README). **Nenhum** alvo destrutivo (sem `down -v`, sem apagar volume ou banco). Alvo novo exige o script npm correspondente primeiro.
 - `.gitignore` cobre `.env*` (exceto `.env.example`), `.next/`, `coverage/`, `reports/`, `test-results/`, `.stryker-tmp/`.
 - Siga a change ativa em `openspec/changes/<change>/`.
 

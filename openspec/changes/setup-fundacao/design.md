@@ -80,6 +80,7 @@ a11y/                     # Playwright + @axe-core/playwright (varredura de pág
 - **Erros** (`lib/errors/`): `codes.ts` com o catálogo inicial (`UNEXPECTED`, `VALIDATION_FAILED`), `messages.ts` com a lookup table `satisfies Record<ErrorCode, string>` em pt-BR e `action-result.ts` com o tipo `ActionResult<T>`. Os fluxos acrescentam códigos nas próximas changes.
 - **Rotas** (`lib/routes.ts`): `ROUTES` com `HOME` nesta change; as demais entram com cada fluxo.
 - **ESLint**: além dos presets, `no-magic-numbers` (fora de testes e configs), `no-console` (exceto `lib/logger.ts`), `@eslint-community/eslint-plugin-eslint-comments` com `no-use` permitindo só `eslint-disable-next-line` e `require-description` (motivo obrigatório depois de ` -- `), e `no-restricted-syntax` barrando valores arbitrários de Tailwind (`[...]`) em literais de `className`/`cn()`, sem plugin extra.
+- **Makefile** (dono: infra): atalhos finos para scripts npm e `docker compose` (`help`, `setup`, `up`, `down`, `logs`, `dev`, `build`, `db-*`, `lint`, `typecheck`, `test`, `qa`, `qa-mutation`). Os scripts npm continuam sendo a fonte; o `make` é opcional no Windows (`winget install ezwinports.make`). Sem alvos destrutivos. Alternativa descartada: só scripts npm, que funcionam mas não dão o `make help` como índice de comandos.
 - **Git**: a sessão principal faz o commit inicial na `main` (OpenSpec, agentes, docs) e cria a branch `change/setup-fundacao`; daí em diante cada agente commita sua tarefa (convenções, seção 7).
 
 ### D7. UI

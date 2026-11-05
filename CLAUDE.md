@@ -20,7 +20,7 @@ A sessão principal orquestra; os agentes em `.claude/agents/` executam. Subagen
 | Agente | Papel | Escreve em |
 |---|---|---|
 | `tech-lead` | Revisa o planejamento e, no fim, a aderência às specs e às convenções (somente leitura); dono dos docs de convenções | — |
-| `infra` | Docker, `.env.example`, dependências, tooling (ESLint, `tsconfig`, `knip`) | `docker/`, `docker-compose.yml`, `package.json`, configs |
+| `infra` | Docker, `.env.example`, dependências, tooling (ESLint, `tsconfig`, `knip`), `Makefile` | `docker/`, `docker-compose.yml`, `package.json`, `Makefile`, configs |
 | `dev-db` | Schema Drizzle, migrações, schema do Better Auth | `db/`, `drizzle/` |
 | `dev-next` | Lógica: rotas, Server Actions, Better Auth, erros, logger, e-mail/SMS | `app/`, `actions/`, `services/`, `schemas/`, `types/`, `lib/`, `emails/`, `proxy.ts`, hooks de fluxo, `components/**/*-container.tsx` |
 | `uiux` | Componentes, telas, acessibilidade, textos, tokens de design | `components/` (Presentational), hooks visuais, marcação de `app/`, `app/globals.css` |

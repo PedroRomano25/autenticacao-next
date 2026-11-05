@@ -69,8 +69,9 @@
 ## 13. Portão de qualidade e documentação (infra)
 
 - [ ] 13.1 Criar o script `qa` (`typecheck` → `lint` → `knip` → `test:unit` → `test:integration` → `test:contract` → `test:a11y` → `a11y:pages`, parando no primeiro que falhar), e verificar que passa e que retorna código diferente de 0 ao introduzir temporariamente um erro de tipo
-- [ ] 13.2 Escrever o README em pt-BR com pré-requisitos (Node, Docker Desktop), os passos `docker compose up -d` → `.env.local` → `db:migrate` → `npm run dev`, a tabela de portões de qualidade (`npm run qa`, `npm run qa:mutation`) e o roadmap das changes, e verificar seguindo os passos num clone limpo
+- [ ] 13.2 Criar o `Makefile` (D8) com os alvos `help` (padrão), `setup` (sobe os serviços, cria `.env.local` a partir do `.env.example` só se não existir, aplica migrações), `up`, `down`, `logs`, `dev`, `build`, `db-generate`, `db-migrate`, `db-studio`, `lint`, `typecheck`, `test`, `qa` e `qa-mutation`, todos `.PHONY` e delegando a scripts npm ou ao `docker compose`, sem alvo destrutivo, e verificar no Windows (`winget install ezwinports.make`) que `make help` lista todos os alvos com descrição e que `make up`, `make qa` e `make down` funcionam
+- [ ] 13.3 Escrever o README em pt-BR com pré-requisitos (Node, Docker Desktop e, opcionalmente, GNU Make via `winget install ezwinports.make`), o início rápido (`make setup` → `make dev`, com os comandos npm/docker equivalentes para quem não usa `make`), a tabela de portões de qualidade (`make qa`/`npm run qa`, `make qa-mutation`/`npm run qa:mutation`) e o roadmap das changes, e verificar seguindo os passos num clone limpo
 
 ## 14. Verificação integrada
 
-- [ ] 14.1 Com o ambiente recém-subido (`docker compose down` + `up -d`, sem apagar volumes), rodar `npm run build`, `npm run qa` e `npm run qa:mutation`, e verificar que todos passam
+- [ ] 14.1 Com o ambiente recém-subido (`make down` + `make up`, sem apagar volumes), rodar `make build`, `make qa` e `make qa-mutation`, e verificar que todos passam
