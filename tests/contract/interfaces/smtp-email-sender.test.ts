@@ -1,7 +1,11 @@
 import { createServer } from 'node:net';
-import { afterEach, describe, it, vi } from 'vitest';
+import { vi } from 'vitest';
 
-import { EMAIL_SENDER_CONTRACT } from '@/tests/contract/interfaces/email-sender-contract';
+import {
+  describeEmailSenderContract,
+  type DeliveredEmail,
+} from '@/tests/contract/interfaces/email-sender-contract';
+import { listMessagesTo } from '@/tests/helpers/mailpit';
 
 const LOOPBACK_HOST = '127.0.0.1';
 
@@ -20,32 +24,33 @@ function findClosedPort(): Promise<number> {
   });
 }
 
-// O envio válido lê o Mailpit pelo helper tests/helpers/mailpit.ts (tarefa 9.5, qa). Até lá, este
-// arquivo roda só o caso de falha; na 9.5 ele passa a chamar describeEmailSenderContract.
-describe('contrato EmailSender: SmtpEmailSender', () => {
-  afterEach(() => {
-    vi.restoreAllMocks();
-    vi.unstubAllEnvs();
-  });
+/** O que chegou de fato ao Mailpit para o destinatário (o contrato usa destinatários únicos). */
+async function readDeliveredFromMailpit(to: string): Promise<DeliveredEmail[]> {
+  const messages = await listMessagesTo(to);
+  return messages.map(({ Subject }) => ({ to, subject: Subject }));
+}
 
-  it(EMAIL_SENDER_CONTRACT.transportFailure.title, () =>
-    EMAIL_SENDER_CONTRACT.transportFailure.run({
-      createHarness: () => Promise.reject(new Error('envio válido depende do helper do Mailpit (9.5)')),
-      createFailingHarness: async () => {
-        vi.stubEnv('SMTP_HOST', LOOPBACK_HOST);
-        vi.stubEnv('SMTP_PORT', String(await findClosedPort()));
-        // lib/env.ts lê o ambiente no carregamento (D5): recarrega os módulos com a porta fechada.
-        vi.resetModules();
-        const { SmtpEmailSender } = await import('@/lib/notifications/smtp-email-sender');
-        return {
-          sender: new SmtpEmailSender(),
-          // Nada pode chegar ao Mailpit: o SMTP aponta para uma porta fechada.
-          readDelivered: () => Promise.resolve([]),
-          internalErrorDetail: 'ECONNREFUSED',
-        };
-      },
-    }),
-  );
+async function importSmtpEmailSender() {
+  // lib/env.ts lê o ambiente no carregamento (D5): recarrega os módulos com o ambiente atual.
+  vi.resetModules();
+  const { SmtpEmailSender } = await import('@/lib/notifications/smtp-email-sender');
+  return new SmtpEmailSender();
+}
 
-  it.todo(`${EMAIL_SENDER_CONTRACT.validSend.title} (ligar com tests/helpers/mailpit.ts na 9.5)`);
+// D6: o SmtpEmailSender passa na suíte compartilhada contra o Mailpit real (SMTP do .env.local).
+describeEmailSenderContract('SmtpEmailSender', {
+  createHarness: async () => ({
+    sender: await importSmtpEmailSender(),
+    readDelivered: readDeliveredFromMailpit,
+  }),
+  createFailingHarness: async () => {
+    vi.stubEnv('SMTP_HOST', LOOPBACK_HOST);
+    vi.stubEnv('SMTP_PORT', String(await findClosedPort()));
+    return {
+      sender: await importSmtpEmailSender(),
+      // Consulta o Mailpit de verdade para provar que nada foi entregue ao destinatário.
+      readDelivered: readDeliveredFromMailpit,
+      internalErrorDetail: 'ECONNREFUSED',
+    };
+  },
 });
