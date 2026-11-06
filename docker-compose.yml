@@ -1,0 +1,44 @@
+name: autenticacao-next
+
+services:
+  mysql:
+    image: mysql:8.4
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:3306:3306"
+    environment:
+      # Credenciais só de desenvolvimento local (o banco escuta apenas em 127.0.0.1).
+      MYSQL_ROOT_PASSWORD: root_dev_password
+      MYSQL_USER: auth
+      MYSQL_PASSWORD: auth_dev_password
+    volumes:
+      - mysql_data:/var/lib/mysql
+      # Roda só na primeira inicialização do volume: cria auth_dev e auth_test.
+      - ./docker/mysql/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p$$MYSQL_ROOT_PASSWORD --silent"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 30s
+
+  mailpit:
+    image: axllent/mailpit:v1.33.0
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:1025:1025"
+      - "127.0.0.1:8025:8025"
+    volumes:
+      - mailpit_data:/data
+    environment:
+      MP_DATABASE: /data/mailpit.db
+    healthcheck:
+      test: ["CMD", "/mailpit", "readyz"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+      start_period: 5s
+
+volumes:
+  mysql_data:
+  mailpit_data:
