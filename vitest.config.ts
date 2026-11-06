@@ -62,7 +62,12 @@ export default defineConfig({
       },
       {
         extends: true,
-        test: { name: 'a11y', environment: 'jsdom', include: ['tests/a11y/**/*.test.tsx'] },
+        test: {
+          name: 'a11y',
+          environment: 'jsdom',
+          include: ['tests/a11y/**/*.test.tsx'],
+          setupFiles: ['tests/a11y/setup.ts'],
+        },
       },
     ],
   },
