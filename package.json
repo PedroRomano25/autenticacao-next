@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "next typegen && tsc --noEmit",
     "knip": "knip",
     "env:init": "node scripts/env-init.mjs",
     "db:generate": "drizzle-kit generate",
