@@ -123,6 +123,16 @@ Instaladas de uma vez pelo `infra` na tarefa 1.3; os demais agentes só configur
 - [Sem E2E, problemas de integração entre a UI e as Server Actions podem passar] → Integração testa as Server Actions diretamente; a varredura axe abre cada página real e falha em erros de renderização.
 - [Versões do Better Auth, Next e shadcn mudam rápido] → Versões exatas no `package.json` e `save-exact=true`.
 
+## Pendências de segurança para as próximas changes
+
+Achados Baixos da auditoria do `security` na `setup-fundacao`, adiados por decisão do usuário (o Médio, contorno do rate limit via `X-Forwarded-For`, foi corrigido nesta change):
+
+- **`session.token` na resposta de `get-session`** (padrão do Better Auth; hoje o token cru não autentica): tirar o campo (hook `after` ou `customSession`) e fazer o contrato proibi-lo, no máximo na change que ligar `bearer`/`customSession`.
+- **`SMS_PROVIDER=console` sem trava de ambiente**: quando entrar um provedor real, `lib/env.ts` recusa `console` com `NODE_ENV=production` (evita OTP em claro no log).
+- **Segredo validado só pelo tamanho**: avaliar checagem de entropia mínima ou documentar que o segredo vem do `env:init`.
+- **`clearMailbox()` apaga a caixa inteira do Mailpit de dev**: apagar só as mensagens do destinatário do teste.
+- **Trava do banco de teste confere só o nome**: opcional, conferir também host/porta.
+
 ## Migration Plan
 
 Primeira change do projeto, sem dados existentes. Para desfazer, basta remover os arquivos criados e, por decisão explícita do usuário, os volumes do Docker (`docker compose down -v`, fora do Makefile).
