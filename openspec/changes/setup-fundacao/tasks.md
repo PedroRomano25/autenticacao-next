@@ -65,8 +65,8 @@
 
 ## 11. Acessibilidade (qa)
 
-- [ ] 11.1 Configurar o projeto `a11y` do Vitest com `vitest-axe` (declaração de tipos em `tests/a11y/vitest-axe.d.ts`) e escrever testes para `Button` e para `Input` com `Label`, e verificar que passam, que um `Input` sem rótulo faz o teste falhar e que `npm run typecheck` aceita o matcher
-- [ ] 11.2 Criar `playwright.config.ts` (D6: só Chromium; `webServer` `next build && next start -p 3100` com `DATABASE_URL` → `auth_test`; `reuseExistingServer: false`), rodar `npx playwright install chromium`, criar `a11y/home.spec.ts` (status 200, `lang="pt-BR"`, texto em pt-BR e zero violações WCAG 2.2 AA, nas preferências clara e escura via `page.emulateMedia({ colorScheme })`) e o script `a11y:pages`, e verificar que `/` passa e que uma violação temporária (ex.: botão sem nome) faz o comando falhar apontando a página e a regra
+- [x] 11.1 Configurar o projeto `a11y` do Vitest com `vitest-axe` (declaração de tipos em `tests/a11y/vitest-axe.d.ts`) e escrever testes para `Button` e para `Input` com `Label`, e verificar que passam, que um `Input` sem rótulo faz o teste falhar e que `npm run typecheck` aceita o matcher
+- [x] 11.2 Criar `playwright.config.ts` (D6: só Chromium; `webServer` `next build && next start -p 3100` com `DATABASE_URL` → `auth_test`; `reuseExistingServer: false`), rodar `npx playwright install chromium`, criar `a11y/home.spec.ts` (status 200, `lang="pt-BR"`, texto em pt-BR e zero violações WCAG 2.2 AA, nas preferências clara e escura via `page.emulateMedia({ colorScheme })`) e o script `a11y:pages`, e verificar que `/` passa e que uma violação temporária (ex.: botão sem nome) faz o comando falhar apontando a página e a regra
 
 ## 12. Mutação (qa)
 
