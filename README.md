@@ -60,11 +60,13 @@ O `.env.local` é gerado por `npm run env:init` a partir do `.env.example` e nun
 
 ## Roadmap das changes
 
-1. `setup-fundacao`: base do projeto (esta change): app, Docker, banco, Better Auth, envio de e-mail/SMS, testes e portões.
-2. `cadastro-login-email-senha`: cadastro e login com e-mail e senha.
-3. Recuperação de senha.
-4. Magic link.
-5. Login e verificação por telefone (OTP).
-6. Minha conta.
-7. Sessões.
-8. Auditoria.
+As changes ficam em `openspec/changes/`, numeradas na ordem de implementação; cada uma começa com o `proposal.md`, e o design, as specs e as tarefas são escritos na sessão dela.
+
+1. `setup-fundacao` (arquivada): base do projeto: app, Docker, banco, Better Auth, envio de e-mail/SMS, testes e portões.
+2. `0002-cadastro-login-email-senha`: cadastro, verificação de e-mail, login e logout com e-mail e senha; limites de tentativas.
+3. `0003-recuperacao-senha`: redefinição de senha por link enviado por e-mail.
+4. `0004-magic-link`: entrada por link de acesso enviado por e-mail.
+5. `0005-telefone-otp`: verificação de telefone e login por código SMS (OTP).
+6. `0006-minha-conta`: visualização e manutenção dos dados da conta.
+7. `0007-sessoes`: lista e revogação das sessões ativas.
+8. `0008-auditoria`: registro e consulta dos eventos de segurança.
