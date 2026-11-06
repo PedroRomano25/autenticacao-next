@@ -10,7 +10,11 @@
     "typecheck": "tsc --noEmit",
     "knip": "knip",
     "env:init": "node scripts/env-init.mjs",
-    "auth:generate": "node scripts/with-env.mjs --react-server better-auth generate --config lib/auth.ts --output db/schema/auth.ts --yes"
+    "auth:generate": "node scripts/with-env.mjs --react-server better-auth generate --config lib/auth.ts --output db/schema/auth.ts --yes",
+    "test:unit": "vitest run --project unit",
+    "test:integration": "vitest run --project integration",
+    "test:contract": "vitest run --project contract",
+    "test:a11y": "vitest run --project a11y"
   },
   "dependencies": {
     "@react-email/components": "1.0.12",
