@@ -173,7 +173,7 @@ Feita pela sessão principal, uma vez por change, depois que `npm run qa` passa 
 - **O que procurar:** aninhamento profundo (troque por retorno antecipado), ternários encadeados, função com mais de uma responsabilidade, abstração sem uso, código morto, nome genérico (`data`, `item`, `handle`, `util`), repetição dentro da change (seção 5).
 - **Invariantes:** o comportamento não muda; exports, tipos e props de `lib/` e `components/ui/` ficam iguais; **nenhum** arquivo de teste é alterado. Teste que falhou depois de uma simplificação desfaz **a simplificação**, nunca o teste.
 - **NUNCA:** trocar `??` por `||`; tirar `return await` de dentro de `try`/`catch` ou de transação; juntar ramos de erro com códigos diferentes; mudar a ordem das validações (ex.: rate limit antes da checagem de credencial); alterar respostas que precisam ser idênticas para conta existente/inexistente; mudar a forma ou a quantidade de consultas ao banco; criar abstração sem três usos; adicionar dependência.
-- **Como:** uma simplificação por vez, com os testes afetados rodando depois de cada uma. No fim, `npm run qa`; se tocou `lib/`, `npm run qa:mutation` com score ≥ 80% e nenhum mutante sobrevivente nas linhas simplificadas, ou desfaça.
+- **Como:** uma simplificação por vez, com os testes afetados rodando depois de cada uma. No fim, `npm run qa`; se tocou `lib/` ou `services/`, `npm run qa:mutation` com score ≥ 80% e nenhum mutante sobrevivente nas linhas simplificadas, ou desfaça.
 - **Limite:** cerca de 50 linhas alteradas. Passou disso, registre o restante como sugestão.
 
 ---

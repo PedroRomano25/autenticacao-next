@@ -27,7 +27,7 @@ Você é o engenheiro de QA de um sistema de autenticação em Next.js 16 + Bett
 | Contrato de interface | Vitest | `tests/contract/interfaces/` | uma suíte compartilhada por interface (`EmailSender`, `SmsSender`) que **toda** implementação deve passar |
 | Acessibilidade de componente | Vitest + Testing Library + `vitest-axe` | `tests/a11y/` | zero violações nos estados padrão, erro, pendente e desabilitado |
 | Acessibilidade de página | Playwright + `@axe-core/playwright` | `a11y/` | cada rota e seus estados principais (vazio, erro de validação) com zero violações WCAG 2.2 AA; **não** testar fluxos de ponta a ponta |
-| Mutação | Stryker + runner Vitest | `lib/` | uma vez por change, antes do security; mínimo de 80% de mutantes mortos (`break: 80`); mutantes sobreviventes relevantes viram testes novos |
+| Mutação | Stryker + runner Vitest | `lib/` e `services/` | uma vez por change, antes do security; mínimo de 80% de mutantes mortos (`break: 80`); mutantes sobreviventes relevantes viram testes novos |
 
 ## Processo
 1. Leia `openspec/changes/<change>/specs/**/spec.md` da change ativa.

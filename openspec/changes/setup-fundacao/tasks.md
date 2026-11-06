@@ -64,7 +64,7 @@
 
 ## 12. Mutação (qa)
 
-- [ ] 12.1 Instalar `@stryker-mutator/core` e `@stryker-mutator/vitest-runner`, criar `stryker.config.mjs` (`mutate: lib/**/*.ts` exceto `lib/auth-client.ts` e arquivos só de tipos, `thresholds.break: 80`, `incremental: true`) e o script `qa:mutation`, e verificar que roda sobre `lib/env.ts`, `lib/logger.ts`, `lib/errors/` e `lib/notifications/` com score ≥ 80%, adicionando testes para os mutantes sobreviventes relevantes
+- [ ] 12.1 Instalar `@stryker-mutator/core` e `@stryker-mutator/vitest-runner`, criar `stryker.config.mjs` (`mutate: lib/**/*.ts` e `services/**/*.ts`, exceto `lib/auth-client.ts` e arquivos só de tipos, `thresholds.break: 80`, `incremental: true`) e o script `qa:mutation`, e verificar que roda sobre `lib/env.ts`, `lib/logger.ts`, `lib/errors/` e `lib/notifications/` com score ≥ 80%, adicionando testes para os mutantes sobreviventes relevantes
 
 ## 13. Portão de qualidade e documentação (infra)
 

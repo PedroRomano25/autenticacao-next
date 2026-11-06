@@ -34,6 +34,6 @@ A sessão principal orquestra; os agentes em `.claude/agents/` executam. Subagen
 4. Tarefa `· alto risco` (ou relatório com `PARADA: alto risco`): a sessão principal chama o `security` para pré-revisar só aquela tarefa; os achados voltam ao autor antes da próxima.
 5. Relatório `BLOQUEADO`: levar a pergunta ao usuário; não decidir por ele.
 6. Achados de `qa` voltam para o agente dono do código (com teste que reproduz primeiro); repetir até `npm run qa` passar.
-7. Com os testes passando, a sessão principal roda `/simplify` seguindo a seção 8 das convenções (escopo, invariantes, limite de ~50 linhas, nenhum teste alterado) e commita `wip(<change>): simplificação`; o `qa` roda `npm run qa` de novo e depois `npm run qa:mutation` (≥ 80% em `lib/`). Se algo quebrar, desfazer a simplificação.
+7. Com os testes passando, a sessão principal roda `/simplify` seguindo a seção 8 das convenções (escopo, invariantes, limite de ~50 linhas, nenhum teste alterado) e commita `wip(<change>): simplificação`; o `qa` roda `npm run qa` de novo e depois `npm run qa:mutation` (≥ 80% em `lib/` e `services/`). Se algo quebrar, desfazer a simplificação.
 8. `security` audita a change → correções pelos donos → `tech-lead` (Modo 2) dá o veredito.
 9. Só com **APROVADO** do tech-lead e nenhum achado Crítico/Alto do security: `/opsx:archive`. O merge na `main` é do usuário; ninguém faz push.

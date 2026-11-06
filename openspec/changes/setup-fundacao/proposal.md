@@ -14,7 +14,7 @@ O projeto está vazio, mas já tem um roteiro de oito changes de autenticação 
 - Criar a abstração de envio de e-mail (`EmailSender`), com implementação SMTP para o Mailpit e templates em React Email.
 - Criar a abstração de envio de SMS (`SmsSender`), com implementação que escreve no console do servidor.
 - Validar as variáveis de ambiente na inicialização com Zod e documentá-las em `.env.example`.
-- Configurar os portões de qualidade, com um exemplo funcional de cada tipo: análise estática (`tsc` strict, ESLint com `jsx-a11y`, `knip`), testes unitários e de integração com Vitest (banco MySQL de teste isolado e helper para ler e-mails pela API do Mailpit), testes de contrato (respostas da API e interfaces de envio), acessibilidade de componente (`vitest-axe`) e de página (Playwright + axe, só para varredura, sem E2E de fluxo) e testes de mutação com Stryker sobre `lib/`. Os comandos são agregados em `npm run qa` e `npm run qa:mutation`.
+- Configurar os portões de qualidade, com um exemplo funcional de cada tipo: análise estática (`tsc` strict, ESLint com `jsx-a11y`, `knip`), testes unitários e de integração com Vitest (banco MySQL de teste isolado e helper para ler e-mails pela API do Mailpit), testes de contrato (respostas da API e interfaces de envio), acessibilidade de componente (`vitest-axe`) e de página (Playwright + axe, só para varredura, sem E2E de fluxo) e testes de mutação com Stryker sobre `lib/` e `services/`. Os comandos são agregados em `npm run qa` e `npm run qa:mutation`.
 - Documentar no README como subir o ambiente local e rodar os testes.
 
 ## Capabilities

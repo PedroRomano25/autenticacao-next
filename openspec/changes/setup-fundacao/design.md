@@ -72,7 +72,7 @@ a11y/                     # Playwright + @axe-core/playwright (varredura de pág
 - **Contrato de API:** schemas Zod em `tests/contract/schemas/` para as respostas de `/api/auth/*` (nesta change, `get-session`). Os testes chamam o handler real via `auth.handler(new Request(...))`, sem subir servidor.
 - **Contrato de interface:** `describeEmailSenderContract(factory)` e `describeSmsSenderContract(factory)` são suítes parametrizadas que cada implementação invoca.
 - **Acessibilidade de página:** Playwright com `webServer` (`next dev`, `DATABASE_URL` → `auth_test`), um teste por rota usando `@axe-core/playwright` com tags `wcag2a`, `wcag2aa`, `wcag21aa` e `wcag22aa`. Só Chromium, para ser mais rápido.
-- **Mutação:** Stryker com `@stryker-mutator/vitest-runner`, `mutate: ["lib/**/*.ts"]` (excluindo `lib/auth-client.ts` e arquivos só de tipos), `thresholds.break: 80` e `incremental: true` para reaproveitar resultados entre execuções.
+- **Mutação:** Stryker com `@stryker-mutator/vitest-runner`, `mutate: ["lib/**/*.ts", "services/**/*.ts"]` (onde mora a lógica de autenticação; `services/` passa a ter arquivos a partir da change `cadastro-login-email-senha`; excluindo `lib/auth-client.ts` e arquivos só de tipos), `thresholds.break: 80` e `incremental: true` para reaproveitar resultados entre execuções.
 - **Scripts:** `typecheck`, `lint`, `knip`, `test:unit`, `test:integration`, `test:contract`, `test:a11y`, `a11y:pages`; `qa` roda os de estático e de teste em sequência, parando no primeiro que falhar; `qa:mutation` roda o Stryker.
 
 ### D8. Bases transversais
@@ -92,7 +92,7 @@ Tailwind v4 com `shadcn init` (componentes `button`, `input`, `label`, `card`, `
 - [Cookie cache faz a revogação demorar até 5 minutos para valer] → Aceito e registrado na spec. A change `sessoes` pode desabilitar o cache em rotas sensíveis.
 - [O schema gerado pela CLI do Better Auth muda quando entram plugins] → Cada change que adicionar plugin regenera o schema e cria uma nova migração do Drizzle.
 - [Docker Desktop no Windows consome memória] → Um único contêiner MySQL para os dois bancos.
-- [Mutação é lenta e pode travar o fluxo] → Escopo restrito a `lib/`, modo incremental e execução uma vez por change, não por tarefa.
+- [Mutação é lenta e pode travar o fluxo] → Escopo restrito a `lib/` e `services/`, modo incremental e execução uma vez por change, não por tarefa.
 - [Sem E2E, problemas de integração entre a UI e as Server Actions podem passar] → Integração testa as Server Actions diretamente; a varredura axe abre cada página real e falha em erros de renderização.
 - [Versões do Better Auth mudam rápido] → Fixar as versões exatas no `package.json`.
 

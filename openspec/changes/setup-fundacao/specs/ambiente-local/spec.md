@@ -50,7 +50,7 @@ O repositório SHALL fornecer um comando que executa, em sequência, a análise 
 - **THEN** o portão de qualidade falha e aponta a página e a regra violada
 
 #### Scenario: Mutação abaixo do mínimo
-- **WHEN** o score de mutação do código em `lib/` fica abaixo de 80%
+- **WHEN** o score de mutação do código em `lib/` e `services/` fica abaixo de 80%
 - **THEN** o comando de mutação termina com falha e lista os mutantes sobreviventes
 
 ### Requirement: Página inicial em pt-BR
