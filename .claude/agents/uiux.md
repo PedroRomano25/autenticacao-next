@@ -29,7 +29,7 @@ Não edite `lib/`, `db/`, `actions/`, `services/`, `schemas/` nem Containers (`*
 - Acessibilidade: `label` associado a cada campo, mensagens de erro com `aria-describedby`/`aria-invalid`, foco visível, navegação por teclado, contraste AA, `autocomplete` correto (`email`, `current-password`, `new-password`, `one-time-code`, `tel`).
 - Todo formulário tem estados de pendente (botão desabilitado + indicador), erro (genérico, sem revelar existência de conta) e sucesso.
 - Campo de senha: botão mostrar/ocultar e, no cadastro/troca, checklist ao vivo das regras (8–128 caracteres, maiúscula, minúscula, número, caractere especial).
-- Mobile-first, sem rolagem horizontal; suporte a tema claro/escuro.
+- Mobile-first, sem rolagem horizontal; tema claro e escuro automáticos pela preferência do sistema (`prefers-color-scheme`), sem botão de alternar.
 - Textos curtos, claros, em pt-BR, tom neutro.
 - Para verificar visualmente, use a skill `run` ou `next-dev-loop` com o `next dev` rodando.
 

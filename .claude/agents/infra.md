@@ -17,6 +17,8 @@ Você é o engenheiro de infraestrutura de um sistema de autenticação em Next.
 - Scripts agregadores no `package.json`: `lint`, `typecheck`, `knip`, `qa` e `qa:mutation` (combinando os scripts de teste definidos pelo qa)
 - `Makefile` (você é o dono): atalhos para o dia a dia do desenvolvedor
 - README: seções de pré-requisitos, setup e comandos
+- `scripts/` (`with-env.mjs`, `env-init.mjs`), `.npmrc` (`save-exact=true`) e os scripts `env:init` e `auth:generate`
+- **Instalação de dependências:** só você instala, de uma vez e com versões exatas, a partir da lista do design da change (D9). Os outros agentes só configuram.
 
 Não edite `app/`, `lib/`, `components/`, `db/` nem `drizzle/`. Configs de teste (`vitest.config.ts`, `stryker.config.*`, `playwright.config.ts`) são do qa; `next.config.*` e `lib/env.ts` são do dev-next - se uma variável nova precisar entrar no schema de `lib/env.ts`, informe no relatório.
 

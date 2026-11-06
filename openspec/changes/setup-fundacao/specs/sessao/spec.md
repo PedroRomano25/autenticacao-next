@@ -7,7 +7,7 @@ Define o ciclo de vida e os atributos das sessões de autenticação: onde ficam
 ## ADDED Requirements
 
 ### Requirement: Sessões persistidas no servidor
-O sistema SHALL guardar cada sessão no banco de dados e identificá-la no navegador apenas por um token opaco. O cookie MUST NOT conter dados do usuário que o servidor use como fonte da verdade.
+O sistema SHALL guardar cada sessão no banco de dados e identificá-la no navegador por um token opaco. Além do token, o navegador MAY guardar uma cópia assinada da sessão (cache) válida por no máximo 5 minutos; fora dessa janela, o banco MUST ser a fonte da verdade.
 
 #### Scenario: Sessão revogada no banco deixa de valer
 - **WHEN** um registro de sessão é removido do banco

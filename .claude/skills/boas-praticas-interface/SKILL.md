@@ -160,7 +160,7 @@ Verificada em três camadas pelo `qa`: `eslint-plugin-jsx-a11y` (estático), `vi
 
 ### 12.1 Tokens de design (dono: `uiux`)
 
-Os valores visuais são os tokens semânticos do shadcn/ui, definidos **uma vez** em `app/globals.css` (claro e escuro).
+Os valores visuais são os tokens semânticos do shadcn/ui, definidos **uma vez** em `app/globals.css` (claro e escuro). O tema escuro é automático: `@custom-variant dark (@media (prefers-color-scheme: dark));`, sem classe `.dark` nem botão de alternar.
 
 - **NUNCA** escreva cor, raio, sombra, tamanho de texto ou peso soltos: nada de hexadecimal, `rgb()`, `oklch()` ou valor arbitrário (`bg-[#…]`, `rounded-[10px]`, `text-[15px]`) em classe, `style` ou CSS de componente.
 - **SEMPRE** use utilitários semânticos: `bg-background`, `text-foreground`, `bg-primary`, `text-primary-foreground`, `text-muted-foreground`, `border-border`, `border-input`, `ring-ring`, `bg-destructive`, `text-destructive`, `bg-card`, `rounded-md`/`rounded-lg`/`rounded-full`.

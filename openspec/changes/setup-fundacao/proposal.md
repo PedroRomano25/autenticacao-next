@@ -30,7 +30,8 @@ O projeto está vazio, mas já tem um roteiro de oito changes de autenticação 
 ## Impact
 
 - **Código:** cria toda a estrutura inicial do repositório (`app/`, `lib/`, `db/`, `emails/`, `tests/`, `a11y/`).
-- **Dependências novas:** `next`, `react`, `tailwindcss`, componentes shadcn/ui, `zod`, `drizzle-orm`, `drizzle-kit`, `mysql2`, `better-auth`, `nodemailer`, `@react-email/components`; para qualidade, `vitest`, `@testing-library/react`, `vitest-axe`, `@playwright/test`, `@axe-core/playwright`, `@stryker-mutator/core`, `@stryker-mutator/vitest-runner`, `typescript-eslint`, `eslint-plugin-jsx-a11y`, `@eslint-community/eslint-plugin-eslint-comments` e `knip`.
+- **Dependências novas:** a lista completa, com versões exatas, está no `design.md` (D9): Next.js/React, Better Auth e sua CLI, Drizzle + `mysql2`, Zod, `server-only`, `nodemailer` + React Email, Tailwind v4 + dependências do shadcn/ui (sem `react-hook-form`), ESLint (`eslint-config-next`, `typescript-eslint`, `eslint-comments`), `knip`, Vitest + `jsdom` + Testing Library + `vitest-axe`, Playwright + axe e Stryker. São instaladas de uma vez pelo `infra`.
+- **Validação do ambiente no boot:** `instrumentation.ts` valida as variáveis quando o servidor sobe; `npm run env:init` gera o `.env.local` com um segredo aleatório.
 - **Convenções:** o código segue as skills `convencoes-de-codigo`, `boas-praticas-servidor` e `boas-praticas-interface`; esta change cria as bases que elas exigem (logger, catálogo de erros, `ROUTES`, constantes de autenticação, regras de ESLint).
 - **Sem testes E2E de fluxo:** os fluxos são cobertos por testes de integração; o Playwright serve apenas para a varredura de acessibilidade das páginas.
 - **Infraestrutura:** Docker Desktop passa a ser pré-requisito do desenvolvimento local.
