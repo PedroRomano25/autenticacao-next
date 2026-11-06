@@ -4,7 +4,7 @@
 
 ## 1. Scaffold e dependências (infra)
 
-- [ ] 1.1 Gerar o app Next.js 16 (TypeScript `strict: true`, App Router, Tailwind v4, ESLint, sem `src/`, sem git) com `create-next-app` numa pasta temporária fora do repositório e copiar para a raiz **sem sobrescrever** `CLAUDE.md`, `docs/`, `.claude/`, `openspec/` e `skills-lock.json` (exceção declarada: o infra escreve os `app/layout.tsx` e `app/page.tsx` iniciais, que o uiux substitui na 10.2), e verificar que `npm run build` conclui sem erros e que `git status` não mostra alteração nos arquivos preservados
+- [x] 1.1 Gerar o app Next.js 16 (TypeScript `strict: true`, App Router, Tailwind v4, ESLint, sem `src/`, sem git) com `create-next-app` numa pasta temporária fora do repositório e copiar para a raiz **sem sobrescrever** `CLAUDE.md`, `docs/`, `.claude/`, `openspec/` e `skills-lock.json` (exceção declarada: o infra escreve os `app/layout.tsx` e `app/page.tsx` iniciais, que o uiux substitui na 10.2), e verificar que `npm run build` conclui sem erros e que `git status` não mostra alteração nos arquivos preservados
 - [ ] 1.2 Criar `.gitignore` (`.env*` exceto `.env.example`, `.next/`, `node_modules/`, `coverage/`, `reports/`, `test-results/`, `playwright-report/`, `blob-report/`, `.stryker-tmp/`), `.gitattributes` (`* text=auto eol=lf`), `.npmrc` (`save-exact=true`) e `engines.node` `>=22` no `package.json`, e verificar que `git status` não lista `.env.local` nem artefatos e que `git add --renormalize .` não gera avisos de CRLF
 - [ ] 1.3 Instalar de uma vez todas as dependências da D9 com versões exatas (a CLI do Better Auth pelo pacote indicado na documentação da versão fixada do `better-auth`), e verificar que `npm ls` lista todas sem erro e que nenhuma versão do `package.json` tem `^` ou `~`
 
