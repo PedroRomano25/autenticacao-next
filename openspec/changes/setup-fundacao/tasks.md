@@ -60,7 +60,7 @@
 
 ## 10. UI base (uiux)
 
-- [ ] 10.1 Rodar `shadcn init` e adicionar `button`, `input`, `label` e `card` (sem `form`; exceção declarada: o shadcn gera `lib/utils.ts` e pode tocar o `package.json`), e verificar que `git diff package.json` não mostra dependência nova fora da D9 (senão `BLOQUEADO`) e que `npm run build`, `npm run lint` e `npm run knip` passam
+- [ ] 10.1 Rodar `shadcn init` e adicionar `button`, `input`, `label` e `card` (sem `form`; exceção declarada: o shadcn gera `lib/utils.ts` e pode tocar o `package.json`; decisão do usuário no apply: o pacote `cn` que o shadcn 4.x adiciona é rejeitado, `lib/utils.ts` exporta `cn()` com `clsx` + `tailwind-merge` e os componentes importam `cn` de `@/lib/utils`), e verificar que `git diff package.json` não mostra dependência nova fora da D9 (senão `BLOQUEADO`) e que `npm run build`, `npm run lint` e `npm run knip` passam
 - [ ] 10.2 Definir em `app/layout.tsx` `<html lang="pt-BR">`, a fonte via `next/font` e `metadata.title`; em `app/globals.css` os tokens semânticos claro/escuro com tema escuro automático (D7: `@custom-variant dark (@media (prefers-color-scheme: dark))` **e** o bloco `.dark { ... }` do shadcn movido para `@media (prefers-color-scheme: dark) { :root { ... } }`, sem nenhum seletor `.dark` restante); e em `app/page.tsx` uma página inicial em português com `<main>`, um único `h1`, `Card` e `Button` só com utilitários semânticos, e um link que usa `ROUTES.HOME` (consumidor real de `lib/routes.ts`; decisão do usuário no apply), e verificar com `curl -i http://localhost:3000/` que a resposta é 200 com o texto em pt-BR e com `npm run lint` que não há valor arbitrário
 
 ## 11. Acessibilidade (qa)
