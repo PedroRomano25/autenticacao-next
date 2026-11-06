@@ -158,7 +158,7 @@ MSG
 | Marcação do `tasks.md` (sessão principal) | `wip(<change>): marca tarefas X.Y, X.Z` |
 
 - O próximo agente do mesmo dono começa pelo commit vermelho e só commita outra coisa depois de deixá-lo verde.
-- **NUNCA** use `--no-verify` nem faça push. O merge na `main` é feito pelo usuário, após a revisão final.
+- **NUNCA** use `--no-verify`. Agentes **nunca** fazem push. Só a sessão principal, depois do archive (passo 10 do [`CLAUDE.md`](../../../CLAUDE.md)), faz push da branch da change, abre a PR para a `main` e a mergeia com commit de merge. Nunca faça push direto na `main` nem use `--force`.
 - **NUNCA** commite segredo, `.env.local` ou artefatos (`coverage/`, `reports/`, `test-results/`, `.stryker-tmp/`, `.next/`). Segredo commitado é achado crítico.
 - **NUNCA** edite uma migração já commitada; crie outra.
 - Registre no relatório o SHA e a mensagem de cada commit (campo `COMMITS`).
