@@ -33,8 +33,8 @@
 
 ## 6. Banco de dados (dev-db)
 
-- [ ] 6.1 Criar `db/index.ts` (pool `mysql2/promise` com `server-only` e `casing: "snake_case"`) e `drizzle.config.ts` (`casing: "snake_case"`, `.env.local` carregado por `process.loadEnvFile`), e verificar que `npx drizzle-kit check` roda sem erro
-- [ ] 6.2 Adicionar os scripts `db:generate`, `db:migrate` e `db:studio` (chamando o `drizzle-kit` direto; o env vem do `drizzle.config.ts`, D8), e verificar que `npm run db:migrate` sem migrações pendentes termina com código 0 contra o `auth_dev`
+- [x] 6.1 Criar `db/index.ts` (pool `mysql2/promise` com `server-only` e `casing: "snake_case"`) e `drizzle.config.ts` (`casing: "snake_case"`, `.env.local` carregado por `process.loadEnvFile`), e verificar que `npx drizzle-kit check` roda sem erro
+- [x] 6.2 Adicionar os scripts `db:generate`, `db:migrate` e `db:studio` (chamando o `drizzle-kit` direto; o env vem do `drizzle.config.ts`, D8), e verificar que `npm run db:migrate` sem migrações pendentes termina com código 0 contra o `auth_dev`
 
 ## 7. Better Auth e sessão (dev-next + dev-db)
 
