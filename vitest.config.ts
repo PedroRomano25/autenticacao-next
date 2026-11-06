@@ -7,11 +7,24 @@ const ROOT_DIR = fileURLToPath(new URL('./', import.meta.url));
 
 // D6: variáveis do `.env.local` com DATABASE_URL apontando para o `auth_test`.
 const fileEnv = parseEnv(readFileSync(`${ROOT_DIR}.env.local`, 'utf8'));
-const testDatabaseUrl = fileEnv.DATABASE_URL_TEST;
+// Uma variável DATABASE_URL_TEST no ambiente do shell prevalece sobre o `.env.local`; o globalSetup
+// recusa qualquer banco que não seja o `auth_test` antes de escrever (tests/setup/global-setup.ts).
+const testDatabaseUrl = process.env.DATABASE_URL_TEST ?? fileEnv.DATABASE_URL_TEST;
 if (!testDatabaseUrl) {
   // Sem DATABASE_URL_TEST os testes cairiam no DATABASE_URL (auth_dev); nunca rodar assim.
   throw new Error('DATABASE_URL_TEST ausente no .env.local: rode `npm run env:init`.');
 }
+
+// D6: integração e contrato usam o MySQL real; um arquivo por vez e projetos em grupos distintos
+// para nunca rodarem ao mesmo tempo contra o mesmo banco.
+const DATABASE_PROJECT_OPTIONS = {
+  environment: 'node',
+  globalSetup: ['tests/setup/global-setup.ts'],
+  setupFiles: ['tests/setup/truncate.ts'],
+  fileParallelism: false,
+};
+const INTEGRATION_GROUP_ORDER = 1;
+const CONTRACT_GROUP_ORDER = 2;
 
 export default defineConfig({
   resolve: {
@@ -23,7 +36,7 @@ export default defineConfig({
   // Vite 8 (peer do vitest 5.1.0): `esbuild` está obsoleto; a opção equivalente é `oxc.jsx`.
   oxc: { jsx: { runtime: 'automatic' } },
   test: {
-    env: { ...fileEnv, DATABASE_URL: testDatabaseUrl },
+    env: { ...fileEnv, DATABASE_URL_TEST: testDatabaseUrl, DATABASE_URL: testDatabaseUrl },
     projects: [
       {
         extends: true,
@@ -32,14 +45,20 @@ export default defineConfig({
       {
         extends: true,
         test: {
+          ...DATABASE_PROJECT_OPTIONS,
           name: 'integration',
-          environment: 'node',
           include: ['tests/integration/**/*.test.ts'],
+          sequence: { groupOrder: INTEGRATION_GROUP_ORDER },
         },
       },
       {
         extends: true,
-        test: { name: 'contract', environment: 'node', include: ['tests/contract/**/*.test.ts'] },
+        test: {
+          ...DATABASE_PROJECT_OPTIONS,
+          name: 'contract',
+          include: ['tests/contract/**/*.test.ts'],
+          sequence: { groupOrder: CONTRACT_GROUP_ORDER },
+        },
       },
       {
         extends: true,
