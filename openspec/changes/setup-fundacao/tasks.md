@@ -41,8 +41,8 @@
 - [x] 7.1 (dev-next) Criar `lib/auth.ts` com `drizzleAdapter(db, { provider: "mysql" })` ainda sem `schema`, a configuração de sessão da D2 (constantes de `lib/constants/auth.ts`), `rateLimit.storage = "database"`, `useSecureCookies`, atributos de cookie explícitos e o plugin `nextCookies()`, e verificar que `npm run typecheck` passa · alto risco
 - [x] 7.2 (dev-db) Rodar `npm run auth:generate` e conferir os nomes de tabela e coluna em `db/schema/auth.ts`. Se estiverem em snake_case: gerar a migração (`npm run db:generate`), ler o SQL, aplicar (`npm run db:migrate`) e verificar com `SHOW TABLES` e `SHOW COLUMNS` (usuário `auth`) que `user`, `session`, `account`, `verification` e `rate_limit` existem no `auth_dev` com colunas em snake_case (ex.: `email_verified`, `user_id`, `expires_at`). Se não estiverem, reportar os nomes gerados e parar para a 7.3; se a CLI não carregar o `lib/auth.ts`, `BLOQUEADO` com o erro
 - [x] 7.3 (dev-next, condicional: só se a 7.2 reportar nomes fora de snake_case) Mapear em `lib/auth.ts` os `modelName` e `fields` de `user`, `session`, `account`, `verification` e `rateLimit` para snake_case, e verificar que, depois de o dev-db repetir a 7.2, todas as tabelas e colunas saem em snake_case — não necessária: a 7.2 gerou tudo em snake_case
-- [ ] 7.4 (dev-next) Passar o `schema` gerado para o `drizzleAdapter` em `lib/auth.ts`, e verificar que `npm run typecheck` passa · alto risco
-- [ ] 7.5 (dev-next) Criar `app/api/auth/[...all]/route.ts` com `toNextJsHandler`, e verificar com `curl -i http://localhost:3000/api/auth/get-session` (sem cookie, `next dev` no ar) que a resposta é 200 com corpo `null` · alto risco
+- [x] 7.4 (dev-next) Passar o `schema` gerado para o `drizzleAdapter` em `lib/auth.ts`, e verificar que `npm run typecheck` passa · alto risco
+- [x] 7.5 (dev-next) Criar `app/api/auth/[...all]/route.ts` com `toNextJsHandler`, e verificar com `curl -i http://localhost:3000/api/auth/get-session` (sem cookie, `next dev` no ar) que a resposta é 200 com corpo `null` · alto risco
 
 ## 8. Base de testes de integração e contrato (qa)
 
