@@ -10,6 +10,7 @@ import {
   SESSION_COOKIE_CACHE_MAX_AGE_SECONDS,
   SESSION_EXPIRES_IN_SECONDS,
   SESSION_UPDATE_AGE_SECONDS,
+  TRUSTED_IP_ADDRESS_HEADERS,
 } from '@/lib/constants/auth';
 
 // D2: `secret` e `baseURL` vêm de BETTER_AUTH_SECRET e BETTER_AUTH_URL, validadas em lib/env.ts
@@ -29,6 +30,8 @@ export const auth = betterAuth({
   advanced: {
     useSecureCookies: true,
     defaultCookieAttributes: { httpOnly: true, secure: true, sameSite: 'lax', path: '/' },
+    // Achado do security: sem proxy, nenhum cabeçalho de IP é confiável (ver a constante).
+    ipAddress: { ipAddressHeaders: TRUSTED_IP_ADDRESS_HEADERS },
   },
   // nextCookies() precisa ser o último plugin.
   plugins: [nextCookies()],

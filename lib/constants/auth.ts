@@ -13,3 +13,11 @@ export const SESSION_EXPIRES_IN_SECONDS = SESSION_DURATION_DAYS * SECONDS_PER_DA
 export const SESSION_UPDATE_AGE_SECONDS = SESSION_RENEWAL_INTERVAL_DAYS * SECONDS_PER_DAY;
 /** `session.cookieCache.maxAge`: janela do cookie cache. */
 export const SESSION_COOKIE_CACHE_MAX_AGE_SECONDS = SESSION_COOKIE_CACHE_MINUTES * SECONDS_PER_MINUTE;
+
+/**
+ * `advanced.ipAddress.ipAddressHeaders`: nenhum cabeçalho de IP é confiável. Não há proxy na
+ * frente do app, então `X-Forwarded-For` e afins vêm do cliente; lidos, deixariam trocar a chave
+ * do rate limit (`ip|path`) a cada requisição. Sem IP resolvido, o Better Auth usa 127.0.0.1 em
+ * dev/test e um balde único por rota (`no-trusted-ip|path`) nos demais ambientes.
+ */
+export const TRUSTED_IP_ADDRESS_HEADERS: string[] = [];
