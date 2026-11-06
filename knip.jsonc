@@ -1,0 +1,14 @@
+{
+  "$schema": "https://unpkg.com/knip@6/schema.json",
+  // register() do Next e scripts de ferramenta não são importados por ninguém.
+  "entry": ["instrumentation.ts", "scripts/*.mjs"],
+  "project": ["**/*.{ts,tsx,mjs}", "!.claude/**", "!openspec/**", "!docs/**"],
+  // Código gerado pelo shadcn (D6).
+  "ignore": ["components/ui/**"],
+  "ignoreDependencies": [
+    "shadcn", // CLI executada por npx, sem import.
+    "lucide-react", // pedido pelo shadcn init; usado a partir dos primeiros ícones.
+    "tw-animate-css", // importado por CSS (app/globals.css).
+    "@testing-library/dom" // peer do @testing-library/react.
+  ]
+}
