@@ -22,7 +22,7 @@
 
 ## 4. Base de testes unitários (qa)
 
-- [ ] 4.1 Criar `vitest.config.ts` (D6: `projects` `unit`, `integration`, `contract` e `a11y`; `loadEnv` com `DATABASE_URL` = `DATABASE_URL_TEST`; aliases `@/` e `server-only` → `tests/helpers/empty-module.ts`; `esbuild.jsx: "automatic"`) e os scripts `test:unit`, `test:integration`, `test:contract` e `test:a11y`, (conferindo na versão fixada se a opção de JSX ainda é `esbuild.jsx` ou mudou com o Vite atual) e verificar que `npx vitest run --project unit --passWithNoTests` termina com código 0 (sem teste trivial; os primeiros testes reais vêm na 5.1)
+- [x] 4.1 Criar `vitest.config.ts` (D6: `projects` `unit`, `integration`, `contract` e `a11y`; `loadEnv` com `DATABASE_URL` = `DATABASE_URL_TEST`; aliases `@/` e `server-only` → `tests/helpers/empty-module.ts`; `esbuild.jsx: "automatic"`) e os scripts `test:unit`, `test:integration`, `test:contract` e `test:a11y`, (conferindo na versão fixada se a opção de JSX ainda é `esbuild.jsx` ou mudou com o Vite atual) e verificar que `npx vitest run --project unit --passWithNoTests` termina com código 0 (sem teste trivial; os primeiros testes reais vêm na 5.1)
 
 ## 5. Configuração e bases transversais (dev-next)
 
