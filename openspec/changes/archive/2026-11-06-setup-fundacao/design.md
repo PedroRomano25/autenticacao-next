@@ -29,7 +29,7 @@ lib/constants/auth.ts     # durações de sessão, cookie cache e afins
 lib/routes.ts             # mapa ROUTES (URLs em pt-BR)
 lib/logger.ts             # logger JSON mínimo + maskEmail/maskPhone
 lib/errors/               # codes.ts, messages.ts, action-result.ts
-lib/notifications/        # email.ts, sms.ts (interfaces + implementações + factory)
+lib/notifications/        # types.ts (interfaces), factory.ts, console-sms-sender.ts, smtp-email-sender.ts, render-email.ts
 lib/utils.ts              # cn() gerado pelo shadcn
 db/index.ts, db/schema/   # cliente Drizzle + schema
 drizzle/                  # migrações geradas
@@ -39,7 +39,7 @@ tests/unit/               # Vitest, sem banco/rede
 tests/integration/        # Vitest contra auth_test + Mailpit
 tests/contract/           # schemas/, api/, interfaces/
 tests/a11y/               # vitest-axe em componentes
-tests/helpers/            # db.ts, mailpit.ts, session.ts, sms.ts, empty-module.ts
+tests/helpers/            # db.ts, test-database.ts, mailpit.ts, session.ts, log-capture.ts, empty-module.ts
 tests/setup/              # global-setup.ts (migra + guarda), truncate.ts
 a11y/                     # Playwright + @axe-core/playwright (varredura de páginas)
 ```
@@ -47,7 +47,7 @@ a11y/                     # Playwright + @axe-core/playwright (varredura de pág
 
 ### D2. Better Auth + Drizzle
 - `drizzleAdapter(db, { provider: "mysql", schema })`. Como o `schema` é gerado a partir do próprio `lib/auth.ts`, a ordem é: (1) `lib/auth.ts` sem `schema`; (2) gerar o schema; (3) ligar o `schema` no adapter.
-- **CLI:** a CLI do Better Auth entra como devDependency com versão exata (o pacote indicado pela documentação da versão fixada do `better-auth`; hoje `@better-auth/cli`). Script `auth:generate` = `node scripts/with-env.mjs --react-server <cli> generate --config lib/auth.ts --output db/schema/auth.ts --yes`. O `with-env.mjs` carrega o `.env.local` e define `NODE_OPTIONS=--conditions=react-server`, o que faz o `server-only` resolver para o módulo vazio fora do Next. As migrações saem do `drizzle-kit generate`/`migrate`. Alternativa descartada: `migrate` da CLI do Better Auth, que deixaria as migrações fora do controle do Drizzle.
+- **CLI:** a CLI do Better Auth entra como devDependency com versão exata (o pacote indicado pela documentação da versão fixada do `better-auth`; hoje o pacote `auth`, na mesma versão do `better-auth`, com o binário `better-auth`; o `@better-auth/cli` está marcado como não suportado). Script `auth:generate` = `node scripts/with-env.mjs --react-server <cli> generate --config lib/auth.ts --output db/schema/auth.ts --yes`. O `with-env.mjs` carrega o `.env.local` e, com `--react-server`, define `NODE_OPTIONS` com `--conditions=react-server` e `--import scripts/server-only-hook.mjs` (hook `module.registerHooks` que troca `server-only` pelo módulo vazio) e `JITI_NATIVE_MODULES='["server-only"]'`: a CLI (pacote `auth` 1.7.18) carrega o config pelo jiti, que ignora as condições do Node; sem o hook, o `server-only` real é executado e lança erro. As migrações saem do `drizzle-kit generate`/`migrate`. Alternativa descartada: `migrate` da CLI do Better Auth, que deixaria as migrações fora do controle do Drizzle.
 - **Sessão:** `expiresIn` de 30 dias, `updateAge` de 1 dia e `cookieCache: { enabled: true, maxAge }` de 5 minutos, todos como constantes nomeadas em `lib/constants/auth.ts`.
 - **Nomes no banco (decisão: snake_case obrigatório):** o Drizzle usa `casing: "snake_case"` no cliente e no `drizzle.config.ts`. O schema gerado traz nomes de coluna explícitos, que prevalecem sobre o `casing`; por isso a tarefa 7.2 confere a saída. Se a CLI emitir colunas ou tabelas em camelCase, a tarefa condicional 7.3 (dev-next) mapeia em `lib/auth.ts` com `modelName` e `fields` de cada modelo (`user`, `session`, `account`, `verification`, `rateLimit` → `rate_limit`) e o schema é regenerado. Nada é editado à mão no arquivo gerado.
 - `rateLimit: { storage: "database" }` já fica habilitado (tabela gerada agora; os limites por rota entram na próxima change).
@@ -69,17 +69,17 @@ a11y/                     # Playwright + @axe-core/playwright (varredura de pág
 - `lib/env.ts` faz o parse de `process.env` com Zod no carregamento do módulo e lança um erro listando os nomes das variáveis inválidas, sem os valores. Variáveis da aplicação: `BETTER_AUTH_SECRET` (mínimo de 32), `BETTER_AUTH_URL`, `DATABASE_URL`, `SMTP_HOST`, `SMTP_PORT`, `EMAIL_FROM`, `EMAIL_PROVIDER`, `SMS_PROVIDER`. Alternativa descartada: `@t3-oss/env-nextjs`, dependência extra para pouco ganho.
 - **Validação na inicialização:** `instrumentation.ts` exporta `register()`, que (no runtime `nodejs`) importa `lib/env.ts`. Assim o `next dev`/`next start` falha ao subir, nomeando a variável, em vez de só na primeira requisição.
 - **Variáveis só de ferramentas:** `DATABASE_URL_TEST` (testes e Playwright) fica no `.env.example`, mas não em `lib/env.ts`.
-- **Exceção à regra "só via `lib/env.ts`":** arquivos de configuração de ferramentas (`drizzle.config.ts`, `vitest.config.ts`, `playwright.config.ts`, `stryker.config.mjs`) e `scripts/` leem `process.env` direto, porque rodam fora do app. O `drizzle.config.ts` carrega o `.env.local` com `process.loadEnvFile` (Node ≥ 20.12, sem dependência nova); o Vitest usa `loadEnv` do Vite.
+- **Exceção à regra "só via `lib/env.ts`":** arquivos de configuração de ferramentas (`drizzle.config.ts`, `vitest.config.ts`, `playwright.config.ts`, `stryker.config.mjs`) e `scripts/` leem `process.env` direto, porque rodam fora do app. O `drizzle.config.ts` carrega o `.env.local` com `process.loadEnvFile` (Node ≥ 20.12, sem dependência nova); o Vitest lê o `.env.local` com `parseEnv` de `node:util` + `readFileSync` (o vitest 5.1.0 não expõe o `loadEnv` do Vite sem depender do pacote `vite`, que fica fora da D9).
 - **Segredo local:** `scripts/env-init.mjs` (`npm run env:init`) cria o `.env.local` a partir do `.env.example` só se ele não existir, trocando o valor de exemplo de `BETTER_AUTH_SECRET` por `crypto.randomBytes(32).toString("base64url")`. O `.env.example` traz um placeholder que **não** passa na validação (ex.: `troque-por-npm-run-env-init`), para que ninguém rode com um segredo público.
 
 ### D6. Portões de qualidade
-- **Estático:** `tsc --noEmit` com `strict`; ESLint flat config sobre o `eslint-config-next` (`core-web-vitals` + `typescript`), reaproveitando as instâncias dos plugins `jsx-a11y` e `@typescript-eslint` que ele já registra (sem registrar de novo, o que dá "Cannot redefine plugin"): os objetos de config seguintes só ativam regras desses plugins. As regras strict do `jsx-a11y` vêm de `jsxA11y.flatConfigs.strict.rules`, importando `eslint-plugin-jsx-a11y` **só para ler as regras** (ele entra como devDependency explícita, na mesma versão usada pelo `eslint-config-next`); com `typescript-eslint` strict-type-checked. `knip` para arquivos, exports e dependências não usados, com `components/ui/**` ignorado (código gerado), `instrumentation.ts`/`scripts/*` como entries e `ignoreDependencies` só para o que não tem import direto nesta change: `shadcn` (CLI), `lucide-react` (pedido pelo `shadcn init`, usado a partir dos primeiros ícones), `tw-animate-css` (importado por CSS) e `@testing-library/dom` (peer do `@testing-library/react`). Cada entrada leva um comentário com o motivo e é revista quando o pacote ganhar uso.
+- **Estático:** `next typegen && tsc --noEmit` com `strict` (o `typegen` gera os tipos de rota de `.next/types`, como `LayoutProps`, que ficam fora do git; sem ele um clone limpo não tipa); ESLint flat config sobre o `eslint-config-next` (`core-web-vitals` + `typescript`), reaproveitando as instâncias dos plugins `jsx-a11y` e `@typescript-eslint` que ele já registra (sem registrar de novo, o que dá "Cannot redefine plugin"): os objetos de config seguintes só ativam regras desses plugins. As regras strict do `jsx-a11y` vêm de `jsxA11y.flatConfigs.strict.rules`, importando `eslint-plugin-jsx-a11y` **só para ler as regras** (ele entra como devDependency explícita, na mesma versão usada pelo `eslint-config-next`); com `typescript-eslint` strict-type-checked. `knip` para arquivos, exports e dependências não usados, com `components/ui/**` ignorado (código gerado), `instrumentation.ts`/`scripts/*` como entries e `ignoreDependencies` só para o que não tem import direto nesta change: `lucide-react` (pedido pelo `shadcn init`, usado a partir dos primeiros ícones), `auth` (binário da CLI do Better Auth usado por `auth:generate`) e `@testing-library/user-event` (usado pelos testes de componente das próximas changes); com `css` no `project`, o knip detecta sozinho `shadcn`, `tailwindcss` e `tw-animate-css`. `ignoreIssues` só para os exports de `lib/notifications/factory.ts` (os testes os chamam por `import()` dinâmico, que o knip não segue), a remover quando o primeiro fluxo usar a factory. Cada entrada leva um comentário com o motivo e é revista quando o pacote ganhar uso.
 - **Regras extras (D8):** valem para o código do projeto; `components/ui/**` (gerado pelo shadcn) fica fora de `no-restricted-syntax` (valores arbitrários) e de `no-magic-numbers`.
 - **Vitest com `projects`:**
   - `unit` (ambiente `node`), `integration` e `contract` (ambiente `node`, MySQL e Mailpit reais) e `a11y` (ambiente `jsdom`, Testing Library + `vitest-axe`).
-  - `vitest.config.ts` faz `loadEnv('test', process.cwd(), '')` e injeta em `test.env` as variáveis do `.env.local` com `DATABASE_URL` = `DATABASE_URL_TEST`.
+  - `vitest.config.ts` lê o `.env.local` com `parseEnv(readFileSync('.env.local', 'utf8'))` e injeta em `test.env` as variáveis do `.env.local` com `DATABASE_URL` = `DATABASE_URL_TEST`.
   - Aliases: `@/` → raiz (manual, sem `vite-tsconfig-paths`) e `server-only` → `tests/helpers/empty-module.ts`.
-  - JSX via `esbuild: { jsx: "automatic" }` (sem `@vitejs/plugin-react`).
+  - JSX via `oxc: { jsx: { runtime: "automatic" } }` (no Vite 8, `esbuild` está obsoleto; sem `@vitejs/plugin-react`).
   - `integration` e `contract`: `globalSetup` (`tests/setup/global-setup.ts`) que conecta por `DATABASE_URL_TEST` (ele roda no processo principal, fora do `test.env`) e **aborta** se `SELECT DATABASE()` não for `auth_test` e aplica as migrações com o migrator do Drizzle; `setupFiles` (`tests/setup/truncate.ts`) trunca as tabelas em `beforeAll` de cada arquivo; `fileParallelism: false`; `sequence.groupOrder` distinto para que os dois projetos não rodem ao mesmo tempo contra o mesmo banco.
   - Relógio: `vi.useFakeTimers({ toFake: ["Date"] })` + `vi.setSystemTime` (timers falsos completos travam o `mysql2`).
   - Tipos do `vitest-axe`: `tests/a11y/vitest-axe.d.ts` declara o matcher no formato do Vitest atual.
@@ -108,7 +108,7 @@ a11y/                     # Playwright + @axe-core/playwright (varredura de pág
 
 ### D9. Dependências (versões exatas, `save-exact=true` no `.npmrc`)
 Instaladas de uma vez pelo `infra` na tarefa 1.3; os demais agentes só configuram. Dependência fora desta lista exige atualizar este design (convenções, seção 1).
-- **Aplicação:** `next`, `react`, `react-dom`, `better-auth`, `drizzle-orm`, `mysql2`, `zod`, `server-only`, `nodemailer`, `@react-email/components`, `@react-email/render`; dependências do shadcn: `class-variance-authority`, `clsx`, `tailwind-merge`, `lucide-react`, `radix-ui` (o conjunto exato é o que o `shadcn init` da versão fixada pedir; se diferir, a tarefa 10.1 reporta `BLOQUEADO`).
+- **Aplicação:** `next`, `react`, `react-dom`, `better-auth`, `drizzle-orm`, `mysql2`, `zod`, `server-only`, `nodemailer`, `@react-email/components`, `@react-email/render`; dependências do shadcn: `class-variance-authority`, `clsx`, `tailwind-merge`, `lucide-react`, `radix-ui` (o conjunto exato é o que o `shadcn init` da versão fixada pedir; se diferir, a tarefa 10.1 reporta `BLOQUEADO`). O `lib/utils.ts` exporta `cn()` com `clsx` + `tailwind-merge`; o pacote `cn` que o `shadcn` 4.x adiciona no `init`/`add` é rejeitado e os componentes importam `cn` de `@/lib/utils` (conferir os imports a cada `shadcn add`).
 - **Desenvolvimento:** `typescript`, `@types/node`, `@types/react`, `@types/react-dom`, `@types/nodemailer`, `tailwindcss`, `@tailwindcss/postcss`, `tw-animate-css`, `shadcn`, `eslint`, `eslint-config-next`, `typescript-eslint`, `@eslint-community/eslint-plugin-eslint-comments`, `knip`, `drizzle-kit`, CLI do Better Auth, `vitest`, `jsdom`, `@testing-library/react`, `@testing-library/dom`, `@testing-library/user-event`, `vitest-axe`, `@playwright/test`, `@axe-core/playwright`, `@stryker-mutator/core`, `@stryker-mutator/vitest-runner`, `eslint-plugin-jsx-a11y` (mesma versão da dependência do `eslint-config-next`, só para ler as regras strict).
 
 ## Risks / Trade-offs
@@ -122,6 +122,19 @@ Instaladas de uma vez pelo `infra` na tarefa 1.3; os demais agentes só configur
 - [Varredura de páginas com `next build` a cada execução é lenta] → Só Chromium e uma execução por `npm run qa`; o ganho é nunca tocar o `auth_dev`.
 - [Sem E2E, problemas de integração entre a UI e as Server Actions podem passar] → Integração testa as Server Actions diretamente; a varredura axe abre cada página real e falha em erros de renderização.
 - [Versões do Better Auth, Next e shadcn mudam rápido] → Versões exatas no `package.json` e `save-exact=true`.
+
+## Pendências de segurança para as próximas changes
+
+Achados Baixos da auditoria do `security` na `setup-fundacao`, adiados por decisão do usuário (o Médio, contorno do rate limit via `X-Forwarded-For`, foi corrigido nesta change):
+
+- **`session.token` na resposta de `get-session`** (padrão do Better Auth; hoje o token cru não autentica): tirar o campo (hook `after` ou `customSession`) e fazer o contrato proibi-lo, no máximo na change que ligar `bearer`/`customSession`.
+- **`SMS_PROVIDER=console` sem trava de ambiente**: quando entrar um provedor real, `lib/env.ts` recusa `console` com `NODE_ENV=production` (evita OTP em claro no log).
+- **Segredo validado só pelo tamanho**: avaliar checagem de entropia mínima ou documentar que o segredo vem do `env:init`.
+- **`clearMailbox()` apaga a caixa inteira do Mailpit de dev**: apagar só as mensagens do destinatário do teste.
+- **Trava do banco de teste confere só o nome**: opcional, conferir também host/porta.
+
+- **Rate limit sem spec**: o rate limit (D2) e a regra "não confiar em `X-Forwarded-For`" (`advanced.ipAddress.ipAddressHeaders = []`, corrigida nesta change a partir do achado do `security`) não têm cenário em spec. A próxima change que definir os limites por rota os especifica, inclusive o balde único por rota quando nenhum IP é resolvido (um cliente pode esgotar o limite de todos; aceitável só no ambiente local, sem proxy).
+- **`cacheComponents: true` e `partialPrefetching: true` no `next.config.ts`**: vieram do `create-next-app` 16.4 e foram mantidos. Com `cacheComponents`, o `requireSession` da próxima change (que lê `headers()`) precisa de limite de `Suspense` ou de rota dinâmica.
 
 ## Migration Plan
 

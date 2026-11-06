@@ -38,6 +38,7 @@ Modelos: `infra` e `dev-db` usam `sonnet` (tarefas mecânicas); os demais herdam
 6. Achados de `qa` voltam para o agente dono do código (com teste que reproduz primeiro); repetir até `npm run qa` passar.
 7. Com os testes passando, a sessão principal roda `/simplify` seguindo a seção 8 das convenções (escopo, invariantes, limite de ~50 linhas, nenhum teste alterado) e commita `wip(<change>): simplificação`; o `qa` roda `npm run qa` de novo e depois `npm run qa:mutation` (≥ 80% em `lib/` e `services/`). Se algo quebrar, desfazer a simplificação.
 8. `security` audita a **change completa** (diff `main...HEAD`) → correções pelos donos (teste que reproduz primeiro) → `npm run qa` → `tech-lead` (Modo 2) dá o veredito.
+9. Só com **APROVADO** do tech-lead e nenhum achado Crítico/Alto do security: `/opsx:archive`.
+10. Depois do archive, a sessão principal (e só ela) faz push da branch `change/<nome>`, abre a PR para a `main` com `gh pr create` (resumo da change, decisões do apply, pendências adiadas) e a mergeia com `gh pr merge --merge` (commit de merge, preservando os commits por tarefa); em seguida atualiza a `main` local. Os agentes nunca fazem push.
 
 **Consumo de tokens:** a sessão principal lê só os relatórios (máximo de ~40 linhas, convenções, seção 11), nunca a saída bruta de comandos (seção 12). Cada change é implementada numa sessão nova: o estado está no CLAUDE.md, no OpenSpec e no git.
-9. Só com **APROVADO** do tech-lead e nenhum achado Crítico/Alto do security: `/opsx:archive`. O merge na `main` é do usuário; ninguém faz push.
