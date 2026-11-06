@@ -54,8 +54,8 @@
 
 - [x] 9.1 (dev-next) Criar as interfaces `EmailSender` e `SmsSender` e a factory (dispatch table) baseada em `EMAIL_PROVIDER`/`SMS_PROVIDER` em `lib/notifications/`, e verificar com teste unitário (escrito antes) que a factory devolve a implementação correta para cada valor
 - [x] 9.2 (qa) Criar as suítes de contrato `describeEmailSenderContract` (envio válido; erro genérico em falha do transporte) e `describeSmsSenderContract` (envio válido; rejeição fora de E.164; erro genérico em falha) em `tests/contract/interfaces/`, e verificar que rodam contra um dublê de teste
-- [ ] 9.3 (dev-next) Implementar `ConsoleSmsSender` com validação E.164, escrevendo pelo `lib/logger.ts` o evento `sms_sent_dev`, e verificar que passa na suíte de contrato de `SmsSender` e que o teste unitário confere a linha JSON com `event`, `to` e `text` · alto risco
-- [ ] 9.4 (dev-next) Criar um template de exemplo em `emails/` e implementar `SmtpEmailSender` (HTML e texto, falha de SMTP registrada como `email_send_failed` e lançada como erro genérico), e verificar que passa na suíte de contrato de `EmailSender`
+- [x] 9.3 (dev-next) Implementar `ConsoleSmsSender` com validação E.164, escrevendo pelo `lib/logger.ts` o evento `sms_sent_dev`, e verificar que passa na suíte de contrato de `SmsSender` e que o teste unitário confere a linha JSON com `event`, `to` e `text` · alto risco
+- [x] 9.4 (dev-next) Criar um template de exemplo em `emails/` e implementar `SmtpEmailSender` (HTML e texto, falha de SMTP registrada como `email_send_failed` e lançada como erro genérico), e verificar que passa na suíte de contrato de `EmailSender`
 - [ ] 9.5 (qa) Criar o helper `tests/helpers/mailpit.ts` (buscar o último e-mail de um destinatário, limpar a caixa) e um teste de integração que envia pelo `SmtpEmailSender` e confere no Mailpit o assunto, o HTML e o texto, e verificar que passa
 
 ## 10. UI base (uiux)
