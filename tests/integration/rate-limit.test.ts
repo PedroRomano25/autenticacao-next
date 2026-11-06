@@ -20,7 +20,7 @@ async function postSignIn(forwardedFor: string): Promise<Response> {
 
 describe('rate limit', () => {
   // Achado do security: sem proxy na frente, X-Forwarded-For vem do cliente e não pode compor a chave.
-  it('[sessao] Rate limit: trocar X-Forwarded-For a cada requisição não escapa do limite', async () => {
+  it('[security: X-Forwarded-For não é confiável] trocar X-Forwarded-For a cada requisição não escapa do limite', async () => {
     const statuses: number[] = [];
     for (let attempt = 1; attempt <= ATTEMPTS; attempt++) {
       const response = await postSignIn(`10.0.0.${String(attempt)}`);

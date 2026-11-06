@@ -24,7 +24,7 @@ describe('lib/auth', () => {
     expect(SESSION_COOKIE_CACHE_MAX_AGE_SECONDS).toBe(5 * 60);
   });
 
-  it('[sessao] Sessões persistidas no servidor: rate limit habilitado e guardado no banco', () => {
+  it('[D2] Rate limit habilitado e guardado no banco', () => {
     expect(auth.options.rateLimit).toMatchObject({ enabled: true, storage: 'database' });
   });
 
@@ -47,7 +47,7 @@ describe('lib/auth', () => {
     });
   });
 
-  it('[sessao] Server Actions podem definir cookies: plugin nextCookies registrado', () => {
+  it('[D2] Server Actions podem definir cookies: plugin nextCookies registrado', () => {
     const pluginIds = auth.options.plugins.map((plugin) => plugin.id);
     expect(pluginIds).toContain('next-cookies');
   });
