@@ -3,14 +3,17 @@
   // register() do Next e scripts de ferramenta não são importados por ninguém.
   // scripts/server-only-hook.mjs é carregado por --import (NODE_OPTIONS), coberto por scripts/*.mjs.
   // tests/helpers/empty-module.ts é o alvo do alias `server-only` no Vitest (vitest.config.ts).
-  "entry": ["instrumentation.ts", "scripts/*.mjs", "tests/helpers/empty-module.ts"],
-  "project": ["**/*.{ts,tsx,mjs}", "!.claude/**", "!openspec/**", "!docs/**"],
+  "entry": ["scripts/*.mjs", "tests/helpers/empty-module.ts"],
+  "project": ["**/*.{ts,tsx,mjs,css}", "!.claude/**", "!openspec/**", "!docs/**"],
   // Código gerado pelo shadcn (D6).
   "ignore": ["components/ui/**"],
   "ignoreDependencies": [
-    "shadcn", // CLI executada por npx, sem import.
     "lucide-react", // pedido pelo shadcn init; usado a partir dos primeiros ícones.
-    "tw-animate-css", // importado por CSS (app/globals.css).
-    "@testing-library/dom" // peer do @testing-library/react.
-  ]
+    "auth", // fornece o binário usado por `auth:generate` via scripts/with-env.mjs.
+    "@testing-library/user-event", // instalado pelo D9; usado pelos testes de componente das próximas changes.
+    "@stryker-mutator/api" // só o tipo em JSDoc do stryker.config.mjs; vem com @stryker-mutator/core.
+  ],
+  // Os testes chamam getEmailSender/getSmsSender por import() dinâmico com desestruturação
+  // (tests/unit/notifications-factory.test.ts), que o knip não segue; os fluxos das próximas changes os usarão.
+  "ignoreIssues": { "lib/notifications/factory.ts": ["exports"] }
 }
