@@ -5,6 +5,7 @@ import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import { nextCookies } from 'better-auth/next-js';
 
 import { db } from '@/db';
+import * as schema from '@/db/schema/auth';
 import {
   SESSION_COOKIE_CACHE_MAX_AGE_SECONDS,
   SESSION_EXPIRES_IN_SECONDS,
@@ -14,8 +15,8 @@ import {
 // D2: `secret` e `baseURL` vêm de BETTER_AUTH_SECRET e BETTER_AUTH_URL, validadas em lib/env.ts
 // (importado por db/index.ts antes de a instância ser criada).
 export const auth = betterAuth({
-  // D2: o `schema` gerado (db/schema/auth.ts) é ligado ao adapter na tarefa 7.4.
-  database: drizzleAdapter(db, { provider: 'mysql' }),
+  // D2: schema gerado pela CLI do Better Auth (db/schema/auth.ts), em snake_case.
+  database: drizzleAdapter(db, { provider: 'mysql', schema }),
   // spec sessao: Duração e renovação deslizante da sessão; Sessões persistidas no servidor.
   session: {
     expiresIn: SESSION_EXPIRES_IN_SECONDS,
