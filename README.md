@@ -1,36 +1,70 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Sistema de autenticação Next.js
 
-## Getting Started
+Projeto de estudo e portfólio: autenticação com Next.js 16 (App Router, Server Actions), Better Auth, Drizzle ORM, MySQL 8.4 e Docker. Roda **apenas localmente**; não há deploy. Interface e URLs em pt-BR, código em inglês. O planejamento fica em [`openspec/`](openspec/) (uma change por capacidade) e as convenções, em [`docs/`](docs/README.md).
 
-First, run the development server:
+## Pré-requisitos
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- Node.js 22 ou superior
+- Docker Desktop (Windows 11) em execução
+- Opcional: GNU Make. No Windows: `winget install ezwinports.make` (reabra o terminal depois). Sem o Make, use os comandos equivalentes abaixo.
+
+## Início rápido
+
+Com Make:
+
+```sh
+npm install
+make setup   # sobe o MySQL e o Mailpit, cria o .env.local, aplica as migrações e instala o Chromium
+make dev     # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Sem Make (mesmos passos):
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```sh
+npm install
+docker compose up -d --wait
+npm run env:init
+npm run db:migrate
+npx playwright install chromium
+npm run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Serviços locais: MySQL em `127.0.0.1:3306` (bancos `auth_dev` e `auth_test`), Mailpit com SMTP em `127.0.0.1:1025` e caixa de e-mails em <http://localhost:8025>.
 
-## Learn More
+O `.env.local` é gerado por `npm run env:init` a partir do `.env.example` e nunca é versionado. Para parar a stack, use `make down` ou `docker compose down` (os dados ficam nos volumes nomeados).
 
-To learn more about Next.js, take a look at the following resources:
+## Comandos
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+`make help` lista os alvos. Cada alvo chama um script do `package.json` ou o `docker compose`.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+| Make | Equivalente | O que faz |
+|---|---|---|
+| `make up` | `docker compose up -d --wait` | Sobe a stack |
+| `make down` | `docker compose down` | Para a stack, mantendo os volumes |
+| `make logs` | `docker compose logs -f` | Logs da stack |
+| `make dev` | `npm run dev` | Servidor de desenvolvimento |
+| `make build` | `npm run build` | Build de produção |
+| `make db-generate` | `npm run db:generate` | Gera migração a partir do schema |
+| `make db-migrate` | `npm run db:migrate` | Aplica as migrações |
+| `make db-studio` | `npm run db:studio` | Drizzle Studio |
+| `make lint` | `npm run lint` | ESLint |
+| `make typecheck` | `npm run typecheck` | TypeScript |
+| `make test` | `npm run test:unit`, `test:integration`, `test:contract`, `test:a11y` | Suítes de teste |
 
-## Deploy on Vercel
+## Portões de qualidade
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+| Comando | Cobre |
+|---|---|
+| `make qa` / `npm run qa` | tipos, lint, knip, testes unitários, de integração, de contrato e de acessibilidade, e acessibilidade das páginas (Playwright + axe). Para no primeiro que falhar. Exige a stack no ar. |
+| `make qa-mutation` / `npm run qa:mutation` | testes de mutação (Stryker) em `lib/` e `services/`, com mínimo de 80%. Lento; roda no fim de cada change. |
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Roadmap das changes
+
+1. `setup-fundacao`: base do projeto (esta change): app, Docker, banco, Better Auth, envio de e-mail/SMS, testes e portões.
+2. `cadastro-login-email-senha`: cadastro e login com e-mail e senha.
+3. Recuperação de senha.
+4. Magic link.
+5. Login e verificação por telefone (OTP).
+6. Minha conta.
+7. Sessões.
+8. Auditoria.
