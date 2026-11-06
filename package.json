@@ -8,7 +8,9 @@
     "start": "next start",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
-    "knip": "knip"
+    "knip": "knip",
+    "env:init": "node scripts/env-init.mjs",
+    "auth:generate": "node scripts/with-env.mjs --react-server better-auth generate --config lib/auth.ts --output db/schema/auth.ts --yes"
   },
   "dependencies": {
     "@react-email/components": "1.0.12",
