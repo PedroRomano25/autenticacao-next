@@ -80,4 +80,4 @@
 
 ## 14. Verificação integrada
 
-- [ ] 14.1 Com o ambiente recém-subido (`make down` + `make up`, sem apagar volumes), rodar `make build`, `make qa` e `make qa-mutation`, e verificar que todos passam
+- [x] 14.1 Com o ambiente recém-subido (`make down` + `make up`, sem apagar volumes), rodar `make build`, `make qa` e `make qa-mutation`, e verificar que todos passam
