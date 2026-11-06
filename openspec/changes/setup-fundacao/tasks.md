@@ -1,6 +1,6 @@
 # Tasks
 
-> Antes do grupo 1, a sessão principal cria a branch `change/setup-fundacao` a partir da `main`. Tarefas `· alto risco` são feitas uma de cada vez e pré-revisadas pelo `security` (convenções, seção 10).
+> Antes do grupo 1, a sessão principal cria a branch `change/setup-fundacao` a partir da `main`. Tarefas `· alto risco` vão num commit só delas e são auditadas pelo `security` na revisão da change completa, no fim (convenções, seção 10).
 
 ## 1. Scaffold e dependências (infra)
 

@@ -204,10 +204,33 @@ Parar é devolver o relatório à sessão principal, que leva a pendência ao us
   - um teste não passa e a correção não é óbvia depois da depuração (seção 9);
   - a spec ou o `design.md` são ambíguos, ou a tarefa exige uma decisão que nenhum artefato cobre;
   - a tarefa pede ação irreversível que ela não descreve por inteiro: migração destrutiva, apagar volume do Docker, troca ou exposição de segredo.
-- **Tarefa de alto risco:** a que toca sessão e cookies, rate limit, geração/validação de tokens, magic links e OTPs, política e hash de senha, migração destrutiva ou segredos. É marcada com `· alto risco` no `tasks.md`; se você perceber o risco numa tarefa sem a marca, trate-a como marcada e avise no relatório. Faça-a **sozinha**, commite e devolva o relatório **sem começar a próxima** (`PARADA: alto risco X.Y`). A sessão principal chama o `security` para pré-revisar a tarefa; os achados voltam a você antes da próxima.
+- **Tarefa de alto risco:** a que toca sessão e cookies, rate limit, geração/validação de tokens, magic links e OTPs, política e hash de senha, migração destrutiva ou segredos. É marcada com `· alto risco` no `tasks.md`; se você perceber o risco numa tarefa sem a marca, trate-a como marcada e avise no relatório. Faça-a num **commit só dela** (sem misturar com outra tarefa) e liste-a no campo `ALTO RISCO` do relatório, com o SHA. Não há pré-revisão por tarefa: o `security` audita a **change completa** no fim, começando pelos commits de alto risco.
 
 ---
 
 ## 11. Relatório final de todo agente
 
-Campos, nesta ordem: `STATUS` (`CONCLUÍDO`, `BLOQUEADO` ou `PARADA: alto risco X.Y`), `TAREFAS`, `ARQUIVOS`, `COMMITS` (SHA + mensagem), `VERIFICAÇÃO` (comandos e resultados), `TDD` (teste que falhou antes da implementação ou da correção), `PENDÊNCIAS` (para outros agentes), `SUGESTÕES` (fora do escopo).
+Campos, nesta ordem: `STATUS` (`CONCLUÍDO` ou `BLOQUEADO`), `TAREFAS`, `ARQUIVOS`, `COMMITS` (SHA + mensagem), `ALTO RISCO` (tarefas e SHAs, ou "nenhuma"), `VERIFICAÇÃO` (comandos e resultado resumido), `TDD` (teste que falhou antes da implementação ou da correção), `PENDÊNCIAS` (para outros agentes), `SUGESTÕES` (fora do escopo).
+
+- **Tamanho:** no máximo ~40 linhas. Nada de colar saída de comando, diff ou arquivo inteiro: cite `arquivo:linha` e o caminho do log (seção 12). Detalhe longo, se necessário, vai para `reports/<change>/<agente>-<tarefa>.md` e o relatório só aponta o arquivo.
+
+---
+
+## 12. Saída de comandos e consumo de tokens
+
+Vale para todos os agentes e para a sessão principal. Saída de comando que entra no contexto custa tokens em todas as etapas seguintes.
+
+- **Comando com saída longa** (`npm install`, `next build`, suíte de testes, Stryker, Playwright, `docker compose logs`, `drizzle-kit`): redirecione para log e leia só o necessário:
+
+```sh
+mkdir -p reports/logs
+npm run test:integration > reports/logs/test-integration.log 2>&1; echo "exit=$?"
+tail -n 30 reports/logs/test-integration.log            # resumo
+grep -nE "FAIL|Error|✗|×" reports/logs/test-integration.log | head -n 40   # só as falhas
+```
+
+- Rode testes **filtrados** enquanto trabalha (`vitest run <arquivo>` ou `-t "<nome>"`); a suíte completa só na verificação final da tarefa.
+- **NUNCA** leia um arquivo grande inteiro quando um trecho resolve: use busca e leitura por faixa de linhas.
+- **NUNCA** cole no relatório saída de comando: informe o código de saída, a contagem (ex.: "42 passaram, 0 falharam") e o caminho do log.
+- `reports/` fica fora do git (`.gitignore`).
+- **Skills sob demanda:** as skills situacionais do seu agente (listadas no arquivo dele) não vêm pré-carregadas; carregue com a ferramenta `Skill` **só** quando a tarefa entrar naquele assunto.

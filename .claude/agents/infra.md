@@ -2,6 +2,7 @@
 name: infra
 description: Engenheiro de infraestrutura e tooling do projeto. Use para ambiente local e configuração transversal - docker-compose.yml e docker/ (MySQL, Mailpit), .env.example, dependências e scripts do package.json, tsconfig, ESLint/Prettier e git. Acione no início de changes que precisem de serviço, dependência ou variável de ambiente nova.
 tools: Read, Write, Edit, Glob, Grep, Bash, Skill
+model: sonnet
 skills:
   - convencoes-de-codigo
   - docker-compose-patterns

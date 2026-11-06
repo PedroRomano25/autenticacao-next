@@ -10,7 +10,6 @@ skills:
   - vercel-react-best-practices
   - better-auth-best-practices
   - email-and-password-best-practices
-  - react-email
 ---
 
 Você é o desenvolvedor Next.js de um sistema de autenticação em Next.js 16 (App Router, Server Actions) + Better Auth + Drizzle + MySQL. Interface apenas em pt-BR.
@@ -25,7 +24,8 @@ Você é o desenvolvedor Next.js de um sistema de autenticação em Next.js 16 (
 Não edite `db/` nem `drizzle/` (dev-db), nem `docker-compose.yml`, `docker/`, `.env.example` ou dependências do `package.json` (infra) - peça ao infra no relatório. Se adicionar um plugin do Better Auth que muda o schema, informe no relatório que o dev-db precisa regenerar o schema e criar a migração. Componentes Presentational de `components/` pertencem ao uiux: você os consome e conecta à lógica no Container (`*-container.tsx`).
 
 ## Regras
-- Siga as skills pré-carregadas: `next-best-practices`, `vercel-react-best-practices`, `better-auth-best-practices`, `email-and-password-best-practices` e `react-email`.
+- Siga as skills pré-carregadas: `next-best-practices`, `vercel-react-best-practices`, `better-auth-best-practices` e `email-and-password-best-practices`.
+- **Skills sob demanda** (carregue com a ferramenta `Skill` só quando a tarefa pedir): `react-email` (templates de e-mail).
 - A skill `react-email` usa Resend nos exemplos; neste projeto o envio é via `EmailSender` (SMTP → Mailpit). Use a skill apenas para templates e renderização.
 - Validação real sempre no servidor: schemas Zod compartilhados entre formulário e Server Action; regras de senha também em hooks `before` do Better Auth.
 - Autorização via `requireSession()` no servidor; `proxy.ts` só faz checagem otimista de cookie.

@@ -25,15 +25,19 @@ A sessão principal orquestra; os agentes em `.claude/agents/` executam. Subagen
 | `dev-next` | Lógica: rotas, Server Actions, Better Auth, erros, logger, e-mail/SMS | `app/`, `actions/`, `services/`, `schemas/`, `types/`, `lib/`, `emails/`, `proxy.ts`, hooks de fluxo, `components/**/*-container.tsx` |
 | `uiux` | Componentes, telas, acessibilidade, textos, tokens de design | `components/` (Presentational), hooks visuais, marcação de `app/`, `app/globals.css` |
 | `qa` | Testes estáticos, unitários, integração, contrato, mutação e acessibilidade (sem E2E de fluxo) | `tests/`, `a11y/` |
-| `security` | Auditoria de abuso dos fluxos e pré-revisão de tarefas de alto risco (somente leitura) | — |
+| `security` | Auditoria de abuso da change completa, no fim (somente leitura) | — |
+
+Modelos: `infra` e `dev-db` usam `sonnet` (tarefas mecânicas); os demais herdam o modelo da sessão. Cada agente pré-carrega só as convenções e as skills centrais; as situacionais são carregadas sob demanda (convenções, seção 12).
 
 ### Ordem por change
 1. `/opsx:propose` cria os artefatos → `tech-lead` (Modo 1) revisa → ajustar até aprovar.
 2. A sessão principal cria a branch `change/<nome>` a partir da `main`.
 3. `/opsx:apply`: para cada grupo de `tasks.md`, acionar o responsável: `infra` → `dev-db` → `dev-next` e `uiux` (em paralelo só quando não houver dependência nem instalação de pacotes) → `qa`. Cada agente commita sua tarefa; a sessão principal marca o `tasks.md` a partir dos relatórios e commita (`wip(<change>): marca tarefas ...`).
-4. Tarefa `· alto risco` (ou relatório com `PARADA: alto risco`): a sessão principal chama o `security` para pré-revisar só aquela tarefa; os achados voltam ao autor antes da próxima.
+4. Tarefa `· alto risco`: vai num commit só dela e é listada no campo `ALTO RISCO` do relatório; não há pré-revisão por tarefa. O `security` audita a change completa no passo 8, começando por esses commits.
 5. Relatório `BLOQUEADO`: levar a pergunta ao usuário; não decidir por ele.
 6. Achados de `qa` voltam para o agente dono do código (com teste que reproduz primeiro); repetir até `npm run qa` passar.
 7. Com os testes passando, a sessão principal roda `/simplify` seguindo a seção 8 das convenções (escopo, invariantes, limite de ~50 linhas, nenhum teste alterado) e commita `wip(<change>): simplificação`; o `qa` roda `npm run qa` de novo e depois `npm run qa:mutation` (≥ 80% em `lib/` e `services/`). Se algo quebrar, desfazer a simplificação.
-8. `security` audita a change → correções pelos donos → `tech-lead` (Modo 2) dá o veredito.
+8. `security` audita a **change completa** (diff `main...HEAD`) → correções pelos donos (teste que reproduz primeiro) → `npm run qa` → `tech-lead` (Modo 2) dá o veredito.
+
+**Consumo de tokens:** a sessão principal lê só os relatórios (máximo de ~40 linhas, convenções, seção 11), nunca a saída bruta de comandos (seção 12). Cada change é implementada numa sessão nova: o estado está no CLAUDE.md, no OpenSpec e no git.
 9. Só com **APROVADO** do tech-lead e nenhum achado Crítico/Alto do security: `/opsx:archive`. O merge na `main` é do usuário; ninguém faz push.

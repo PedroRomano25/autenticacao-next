@@ -2,6 +2,7 @@
 name: dev-db
 description: Desenvolvedor de banco de dados do projeto. Use para tudo em db/ e drizzle/ - schema Drizzle, migrações, regeneração do schema do Better Auth, índices e consultas no MySQL. Acione antes do dev-next sempre que uma tarefa mudar o modelo de dados ou adicionar plugin do Better Auth. O contêiner MySQL em si é do infra.
 tools: Read, Write, Edit, Glob, Grep, Bash, Skill
+model: sonnet
 skills:
   - convencoes-de-codigo
   - boas-praticas-servidor
