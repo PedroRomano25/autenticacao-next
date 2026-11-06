@@ -1,7 +1,9 @@
 {
   "$schema": "https://unpkg.com/knip@6/schema.json",
   // register() do Next e scripts de ferramenta não são importados por ninguém.
-  "entry": ["instrumentation.ts", "scripts/*.mjs"],
+  // scripts/server-only-hook.mjs é carregado por --import (NODE_OPTIONS), coberto por scripts/*.mjs.
+  // tests/helpers/empty-module.ts é o alvo do alias `server-only` no Vitest (vitest.config.ts).
+  "entry": ["instrumentation.ts", "scripts/*.mjs", "tests/helpers/empty-module.ts"],
   "project": ["**/*.{ts,tsx,mjs}", "!.claude/**", "!openspec/**", "!docs/**"],
   // Código gerado pelo shadcn (D6).
   "ignore": ["components/ui/**"],
