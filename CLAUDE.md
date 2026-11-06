@@ -30,7 +30,7 @@ A sessão principal orquestra; os agentes em `.claude/agents/` executam. Subagen
 Modelos: `infra` e `dev-db` usam `sonnet` (tarefas mecânicas); os demais herdam o modelo da sessão. Cada agente pré-carrega só as convenções e as skills centrais; as situacionais são carregadas sob demanda (convenções, seção 12).
 
 ### Ordem por change
-1. `/opsx:propose` cria os artefatos → `tech-lead` (Modo 1) revisa → ajustar até aprovar.
+1. As changes do roadmap já existem em `openspec/changes/` com o `proposal.md` (numeradas `0002-…` a `0008-…`, implementadas nessa ordem). Na sessão da change, completar `design.md`, specs e `tasks.md` (`openspec instructions <artefato> --change <nome>`), resolvendo as perguntas em aberto do proposal com o usuário; change nova fora do roadmap usa `/opsx:propose` com o próximo número → `tech-lead` (Modo 1) revisa → ajustar até aprovar.
 2. A sessão principal cria a branch `change/<nome>` a partir da `main`.
 3. `/opsx:apply`: para cada grupo de `tasks.md`, acionar o responsável: `infra` → `dev-db` → `dev-next` e `uiux` (em paralelo só quando não houver dependência nem instalação de pacotes) → `qa`. Cada agente commita sua tarefa; a sessão principal marca o `tasks.md` a partir dos relatórios e commita (`wip(<change>): marca tarefas ...`).
 4. Tarefa `· alto risco`: vai num commit só dela e é listada no campo `ALTO RISCO` do relatório; não há pré-revisão por tarefa. O `security` audita a change completa no passo 8, começando por esses commits.
