@@ -1,5 +1,5 @@
 // D6 (Mutação): Stryker com o runner do Vitest sobre `lib/` e `services/`.
-/** @type {import('@stryker-mutator/api/core').PartialStrykerOptions} */
+/** @type {ConstructorParameters<typeof import('@stryker-mutator/core').Stryker>[0]} */
 const config = {
   testRunner: 'vitest',
   // O runner 10.1.1 percorre `ctx.projects` do vitest.config.ts (unit, integration, contract, a11y).
