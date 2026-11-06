@@ -17,7 +17,8 @@
     "test:unit": "vitest run --project unit",
     "test:integration": "vitest run --project integration",
     "test:contract": "vitest run --project contract",
-    "test:a11y": "vitest run --project a11y"
+    "test:a11y": "vitest run --project a11y",
+    "a11y:pages": "playwright test"
   },
   "dependencies": {
     "@react-email/components": "1.0.12",
