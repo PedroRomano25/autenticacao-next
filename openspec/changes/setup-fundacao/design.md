@@ -29,7 +29,7 @@ lib/constants/auth.ts     # durações de sessão, cookie cache e afins
 lib/routes.ts             # mapa ROUTES (URLs em pt-BR)
 lib/logger.ts             # logger JSON mínimo + maskEmail/maskPhone
 lib/errors/               # codes.ts, messages.ts, action-result.ts
-lib/notifications/        # email.ts, sms.ts (interfaces + implementações + factory)
+lib/notifications/        # types.ts (interfaces), factory.ts, console-sms-sender.ts, smtp-email-sender.ts, render-email.ts
 lib/utils.ts              # cn() gerado pelo shadcn
 db/index.ts, db/schema/   # cliente Drizzle + schema
 drizzle/                  # migrações geradas
@@ -39,7 +39,7 @@ tests/unit/               # Vitest, sem banco/rede
 tests/integration/        # Vitest contra auth_test + Mailpit
 tests/contract/           # schemas/, api/, interfaces/
 tests/a11y/               # vitest-axe em componentes
-tests/helpers/            # db.ts, mailpit.ts, session.ts, sms.ts, empty-module.ts
+tests/helpers/            # db.ts, test-database.ts, mailpit.ts, session.ts, log-capture.ts, empty-module.ts
 tests/setup/              # global-setup.ts (migra + guarda), truncate.ts
 a11y/                     # Playwright + @axe-core/playwright (varredura de páginas)
 ```
@@ -73,7 +73,7 @@ a11y/                     # Playwright + @axe-core/playwright (varredura de pág
 - **Segredo local:** `scripts/env-init.mjs` (`npm run env:init`) cria o `.env.local` a partir do `.env.example` só se ele não existir, trocando o valor de exemplo de `BETTER_AUTH_SECRET` por `crypto.randomBytes(32).toString("base64url")`. O `.env.example` traz um placeholder que **não** passa na validação (ex.: `troque-por-npm-run-env-init`), para que ninguém rode com um segredo público.
 
 ### D6. Portões de qualidade
-- **Estático:** `tsc --noEmit` com `strict`; ESLint flat config sobre o `eslint-config-next` (`core-web-vitals` + `typescript`), reaproveitando as instâncias dos plugins `jsx-a11y` e `@typescript-eslint` que ele já registra (sem registrar de novo, o que dá "Cannot redefine plugin"): os objetos de config seguintes só ativam regras desses plugins. As regras strict do `jsx-a11y` vêm de `jsxA11y.flatConfigs.strict.rules`, importando `eslint-plugin-jsx-a11y` **só para ler as regras** (ele entra como devDependency explícita, na mesma versão usada pelo `eslint-config-next`); com `typescript-eslint` strict-type-checked. `knip` para arquivos, exports e dependências não usados, com `components/ui/**` ignorado (código gerado), `instrumentation.ts`/`scripts/*` como entries e `ignoreDependencies` só para o que não tem import direto nesta change: `shadcn` (CLI), `lucide-react` (pedido pelo `shadcn init`, usado a partir dos primeiros ícones), `tw-animate-css` (importado por CSS) e `@testing-library/dom` (peer do `@testing-library/react`). Cada entrada leva um comentário com o motivo e é revista quando o pacote ganhar uso.
+- **Estático:** `next typegen && tsc --noEmit` com `strict` (o `typegen` gera os tipos de rota de `.next/types`, como `LayoutProps`, que ficam fora do git; sem ele um clone limpo não tipa); ESLint flat config sobre o `eslint-config-next` (`core-web-vitals` + `typescript`), reaproveitando as instâncias dos plugins `jsx-a11y` e `@typescript-eslint` que ele já registra (sem registrar de novo, o que dá "Cannot redefine plugin"): os objetos de config seguintes só ativam regras desses plugins. As regras strict do `jsx-a11y` vêm de `jsxA11y.flatConfigs.strict.rules`, importando `eslint-plugin-jsx-a11y` **só para ler as regras** (ele entra como devDependency explícita, na mesma versão usada pelo `eslint-config-next`); com `typescript-eslint` strict-type-checked. `knip` para arquivos, exports e dependências não usados, com `components/ui/**` ignorado (código gerado), `instrumentation.ts`/`scripts/*` como entries e `ignoreDependencies` só para o que não tem import direto nesta change: `lucide-react` (pedido pelo `shadcn init`, usado a partir dos primeiros ícones), `auth` (binário da CLI do Better Auth usado por `auth:generate`) e `@testing-library/user-event` (usado pelos testes de componente das próximas changes); com `css` no `project`, o knip detecta sozinho `shadcn`, `tailwindcss` e `tw-animate-css`. `ignoreIssues` só para os exports de `lib/notifications/factory.ts` (os testes os chamam por `import()` dinâmico, que o knip não segue), a remover quando o primeiro fluxo usar a factory. Cada entrada leva um comentário com o motivo e é revista quando o pacote ganhar uso.
 - **Regras extras (D8):** valem para o código do projeto; `components/ui/**` (gerado pelo shadcn) fica fora de `no-restricted-syntax` (valores arbitrários) e de `no-magic-numbers`.
 - **Vitest com `projects`:**
   - `unit` (ambiente `node`), `integration` e `contract` (ambiente `node`, MySQL e Mailpit reais) e `a11y` (ambiente `jsdom`, Testing Library + `vitest-axe`).
@@ -132,6 +132,9 @@ Achados Baixos da auditoria do `security` na `setup-fundacao`, adiados por decis
 - **Segredo validado só pelo tamanho**: avaliar checagem de entropia mínima ou documentar que o segredo vem do `env:init`.
 - **`clearMailbox()` apaga a caixa inteira do Mailpit de dev**: apagar só as mensagens do destinatário do teste.
 - **Trava do banco de teste confere só o nome**: opcional, conferir também host/porta.
+
+- **Rate limit sem spec**: o rate limit (D2) e a regra "não confiar em `X-Forwarded-For`" (`advanced.ipAddress.ipAddressHeaders = []`, corrigida nesta change a partir do achado do `security`) não têm cenário em spec. A próxima change que definir os limites por rota os especifica, inclusive o balde único por rota quando nenhum IP é resolvido (um cliente pode esgotar o limite de todos; aceitável só no ambiente local, sem proxy).
+- **`cacheComponents: true` e `partialPrefetching: true` no `next.config.ts`**: vieram do `create-next-app` 16.4 e foram mantidos. Com `cacheComponents`, o `requireSession` da próxima change (que lê `headers()`) precisa de limite de `Suspense` ou de rota dinâmica.
 
 ## Migration Plan
 
