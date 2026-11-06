@@ -70,7 +70,7 @@
 
 ## 12. Mutação (qa)
 
-- [ ] 12.1 Criar `stryker.config.mjs` (D6: `concurrency: 1`, `mutate` em `lib/**/*.ts` e `services/**/*.ts` com as exclusões da D6, `thresholds.break: 80`, `incremental: true`) e o script `test:mutation`, confirmando na versão fixada que o `vitest-runner` aceita `projects` e que a sandbox do Stryker leva o `.env.local` (senão, configurar o arquivo como copiado), e verificar que o score fica ≥ 80% (adicionando testes para os mutantes sobreviventes relevantes) e que, com o limite de quebra em 100 (pela opção de CLI ou config da versão fixada), o comando termina com código diferente de 0 e lista os sobreviventes
+- [x] 12.1 Criar `stryker.config.mjs` (D6: `concurrency: 1`, `mutate` em `lib/**/*.ts` e `services/**/*.ts` com as exclusões da D6, `thresholds.break: 80`, `incremental: true`) e o script `test:mutation`, confirmando na versão fixada que o `vitest-runner` aceita `projects` e que a sandbox do Stryker leva o `.env.local` (senão, configurar o arquivo como copiado), e verificar que o score fica ≥ 80% (adicionando testes para os mutantes sobreviventes relevantes) e que, com o limite de quebra em 100 (pela opção de CLI ou config da versão fixada), o comando termina com código diferente de 0 e lista os sobreviventes
 
 ## 13. Portão de qualidade e documentação (infra)
 
