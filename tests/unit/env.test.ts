@@ -76,6 +76,18 @@ describe('lib/env', () => {
     expect(error.message.match(/SMTP_PORT/g)).toHaveLength(1);
   });
 
+  it('[ambiente-local] Variável obrigatória ausente: nomeia cada variável separadamente e indica o env:init', async () => {
+    stubEnv({ DATABASE_URL: undefined, SMTP_PORT: 'porta', EMAIL_PROVIDER: 'resend' });
+
+    const error = await loadEnvError();
+
+    // Limites de palavra: nomes colados (`DATABASE_URLSMTP_PORT`) não contam como nomeados.
+    expect(error.message).toMatch(/\bDATABASE_URL\b/);
+    expect(error.message).toMatch(/\bSMTP_PORT\b/);
+    expect(error.message).toMatch(/\bEMAIL_PROVIDER\b/);
+    expect(error.message).toContain('npm run env:init');
+  });
+
   it('[ambiente-local] Segredo curto demais', async () => {
     const shortSecret = 'segredo-curto-com-31-caracteres';
     expect(shortSecret).toHaveLength(31);
@@ -124,6 +136,11 @@ describe('lib/env', () => {
     ['SMS_PROVIDER', 'twilio'],
     ['BETTER_AUTH_URL', 'ftp://localhost'],
     ['DATABASE_URL', 'http://127.0.0.1:3306/auth_dev'],
+    // O protocolo precisa ser exatamente http/https e mysql, não só começar ou terminar com ele.
+    ['BETTER_AUTH_URL', 'xhttp://localhost:3000'],
+    ['BETTER_AUTH_URL', 'httpsx://localhost:3000'],
+    ['DATABASE_URL', 'xmysql://auth:senha@127.0.0.1:3306/auth_dev'],
+    ['DATABASE_URL', 'mysqlx://auth:senha@127.0.0.1:3306/auth_dev'],
   ] as const)('[ambiente-local] recusa %s = "%s"', async (name, value) => {
     stubEnv({ [name]: value });
 
